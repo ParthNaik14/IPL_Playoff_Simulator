@@ -37,14 +37,14 @@ updated_points_data = {
         "runs_against": 1794, "overs_bowled": "191.2"
     },
     "Mumbai Indians": {
-        "points": 14, "matches": 11,
-        "runs_for": 1962, "overs_faced": "202.2",
-        "runs_against": 1846, "overs_bowled": "219.1"
+        "points": 14, "matches": 12,
+        "runs_for": 2108, "overs_faced": "221.2",
+        "runs_against": 1993, "overs_bowled": "238.1"
     },
     "Gujarat Titans": {
-        "points": 14, "matches": 10,
-        "runs_for": 1983, "overs_faced": "193.5",
-        "runs_against": 1829, "overs_bowled": "195.2"
+        "points": 16, "matches": 11,
+        "runs_for": 2130, "overs_faced": "212.5",
+        "runs_against": 1975, "overs_bowled": "214.2"
     },
     "Delhi Capitals": {
         "points": 13, "matches": 11,
