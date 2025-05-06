@@ -91,7 +91,7 @@ squad_strength = {
 
 remaining_matches = [
     #{"home": "Sunrisers Hyderabad", "away": "Delhi Capitals", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
+    #{"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     {"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Dharamsala", "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
