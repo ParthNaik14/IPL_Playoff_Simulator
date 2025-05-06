@@ -1,0 +1,12 @@
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+
+# Ignore results and generated files
+/results/
+*.csv
+*.xlsx
+
+# Ignore system files
+.DS_Store
+.env
