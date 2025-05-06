@@ -10,3 +10,9 @@ __pycache__/
 # Ignore system files
 .DS_Store
 .env
+ 
+# IDE settings
+.idea/
+
+# Virtual environment
+venv/

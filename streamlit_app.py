@@ -8,6 +8,18 @@ import ipl_simulator as sim  # your simulator logic file
 st.set_page_config(page_title="IPL Playoff Simulator", layout="wide")
 st.title("📊 IPL 2025 Playoff Qualification Simulator")
 
+query_params = st.query_params
+if "reset" in query_params:
+    reset_type = query_params["reset"]
+    if reset_type == "everything":
+        st.success("✅ Everything has been reset.")
+    elif reset_type == "scenarios":
+        st.success("✅ All What-if scenario inputs have been cleared.")
+    st.query_params.clear()  # Clear after displaying message
+
+
+
+
 # --- Sidebar: Simulation controls ---
 total_simulations = st.sidebar.number_input("Total Simulations", value=10000, step=2000, min_value=2000, max_value=14000605)
 processes = st.sidebar.slider("Parallel Processes", min_value=2, max_value=128, value=16, step=2)
@@ -20,6 +32,75 @@ if "simulation_df" not in st.session_state:
     st.session_state.timestamp = None
 
 
+# --- Run Simulations ---
+if st.sidebar.button("🚀 Run Simulation"):
+    with st.spinner("Running simulations... please wait."):
+
+        # Run simulations
+        df = sim.run_parallel_simulations(total_simulations, processes=processes)
+        pure_math = sim.run_pure_math_simulation_parallel(total_simulations, processes=processes)
+
+        # Insert "Top 4 Pure Math (%)" before Avg Final Points
+        insert_idx = df.columns.get_loc("Avg Final Points")
+        df.insert(loc=insert_idx, column="Top 4 Pure Math (%)", value=df["Team"].map(pure_math))
+
+        # Fix index from 1 to 10
+        df.index = range(1, len(df) + 1)
+
+        # Apply styled formatting
+        styled_df = sim.fancy_highlight_half_split(df.copy())
+
+        # Store results in session
+        st.session_state.simulation_df = df
+        st.session_state.styled_df = styled_df
+        st.session_state.match_number = 70 - len(sim.remaining_matches)
+        st.session_state.timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        st.session_state["what_if_applied"] = False
+
+
+# --- Reset Buttons Logic (MUST be before widgets) ---
+if st.sidebar.button("🔄 Reset Everything"):
+    # Reset backend matches
+    reset_matches = [
+        {
+            "home": match["home"],
+            "away": match["away"],
+            "venue": match["venue"],
+            "result": None,
+            "margin": None,
+            "applied": False
+        }
+        for match in sim.remaining_matches
+    ]
+    sim.set_what_if_results(reset_matches)
+
+    # Clear all widget state variables
+    for i in range(len(sim.remaining_matches)):
+        st.session_state.pop(f"whatif_result_{i}", None)
+        st.session_state.pop(f"winner_runs_{i}", None)
+        st.session_state.pop(f"winner_overs_{i}", None)
+        st.session_state.pop(f"loser_runs_{i}", None)
+        st.session_state.pop(f"loser_overs_{i}", None)
+
+    # Reset other simulation state
+    st.session_state.simulation_df = None
+    st.session_state.styled_df = None
+    st.session_state.match_number = 70 - len(sim.remaining_matches)
+    st.session_state.timestamp = None
+    st.session_state.what_if_applied = False
+    st.query_params["reset"] = "everything"
+    # Rerun to re-render widgets cleanly
+    st.rerun()
+
+if st.sidebar.button("♻️ Reset What-if Scenarios"):
+    for i in range(len(sim.remaining_matches)):
+        st.session_state.pop(f"whatif_result_{i}", None)
+        st.session_state.pop(f"winner_runs_{i}", None)
+        st.session_state.pop(f"winner_overs_{i}", None)
+        st.session_state.pop(f"loser_runs_{i}", None)
+        st.session_state.pop(f"loser_overs_{i}", None)
+    st.query_params["reset"] = "scenarios"
+    st.rerun()
 
 # --- What-if Scenario Editor ---
 st.sidebar.markdown("### 🧪 What-if Scenario Editor")
@@ -32,6 +113,8 @@ for i, match in enumerate(sim.remaining_matches):
         winner = st.selectbox(
             "Select Winner",
             options=["", match["home"], match["away"]],
+            index=0 if st.session_state.get(f"whatif_result_{i}", "") == "" else [match["home"], match["away"]].index(
+                st.session_state[f"whatif_result_{i}"]) + 1,
             key=f"whatif_result_{i}"
         )
 
@@ -101,69 +184,6 @@ if st.sidebar.button("✅ Apply What-if Scenarios"):
     st.success("✅ What-if simulation applied successfully!")
 
 
-
-
-# Reset What-if Scenario
-if st.sidebar.button("🔄 Reset What-if Scenarios"):
-    reset_matches = [
-        {
-            "home": match["home"],
-            "away": match["away"],
-            "venue": match["venue"],
-            "result": None,
-            "margin": None,
-            "applied": False
-        }
-        for match in sim.remaining_matches
-    ]
-    sim.set_what_if_results(reset_matches)
-    st.warning("What-if results have been reset.")
-
-
-
-
-# --- Run Simulations ---
-if st.sidebar.button("Run Simulation"):
-    with st.spinner("Running simulations... please wait."):
-
-        # Run simulations
-        df = sim.run_parallel_simulations(total_simulations, processes=processes)
-        pure_math = sim.run_pure_math_simulation_parallel(total_simulations, processes=processes)
-
-        # Insert "Top 4 Pure Math (%)" before Avg Final Points
-        insert_idx = df.columns.get_loc("Avg Final Points")
-        df.insert(loc=insert_idx, column="Top 4 Pure Math (%)", value=df["Team"].map(pure_math))
-
-        # Fix index from 1 to 10
-        df.index = range(1, len(df) + 1)
-
-        # Apply styled formatting
-        styled_df = sim.fancy_highlight_half_split(df.copy())
-
-        # Store results in session
-        st.session_state.simulation_df = df
-        st.session_state.styled_df = styled_df
-        st.session_state.match_number = 70 - len(sim.remaining_matches)
-        st.session_state.timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        st.session_state["what_if_applied"] = False
-
-if st.sidebar.button("♻️ Reset What-if Results"):
-    # Reset all what-if overrides in backend
-    new_matches = []
-    for match in sim.remaining_matches:
-        reset_match = match.copy()
-        reset_match["result"] = None
-        reset_match["margin"] = None
-        reset_match["applied"] = False
-        new_matches.append(reset_match)
-    sim.set_what_if_results(new_matches)
-
-    # Clear result state
-    st.session_state.simulation_df = None
-    st.session_state.styled_df = None
-    st.session_state.match_number = 70 - len(sim.remaining_matches)
-    st.session_state.timestamp = None
-    st.success("✅ All What-if results have been cleared.")
 
 # --- Display Results ---
 if st.session_state.simulation_df is not None:
