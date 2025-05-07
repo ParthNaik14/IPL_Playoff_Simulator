@@ -458,7 +458,7 @@ def run_pure_math_worker(args):
 
 
 
-def run_pure_math_simulation_parallel(total_sims=10000, processes=16, override_matches=None):
+def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_matches=None):
 
     sims_per_core = total_sims // processes
     seeds = np.random.randint(0, 1e9, size=processes)
@@ -498,7 +498,7 @@ def parallel_worker(seed_and_sims_matches):
 
 
 
-def run_parallel_simulations(total_sims=10000, processes=16, override_matches=None):
+def run_parallel_simulations(total_sims=10000, processes=4, override_matches=None):
     sims_per_core = total_sims // processes
     seeds = np.random.randint(0, 1e9, size=processes)
     matches_to_use = override_matches if override_matches is not None else remaining_matches

@@ -22,7 +22,7 @@ if "reset" in query_params:
 
 # --- Sidebar: Simulation controls ---
 total_simulations = st.sidebar.number_input("Total Simulations", value=10000, step=2000, min_value=2000, max_value=14000605)
-processes = st.sidebar.slider("Parallel Processes", min_value=2, max_value=128, value=16, step=2)
+processes = st.sidebar.slider("Parallel Processes", min_value=1, max_value=4, value=2, step=1)
 
 # --- Persistent state ---
 if "simulation_df" not in st.session_state:
@@ -231,6 +231,7 @@ if st.session_state.simulation_df is not None:
             st.markdown("### 📌 Current IPL Points Table")
 
             current_table = pd.DataFrame(sim.get_current_points_table())
+            current_table.index = range(1, len(current_table) + 1)
 
 
             def style_points_table(df):
