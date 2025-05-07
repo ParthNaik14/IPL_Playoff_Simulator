@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from multiprocessing import Pool
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 import pandas as pd
@@ -52,9 +52,9 @@ updated_points_data = {
         "runs_against": 1818, "overs_bowled": "197.5"
     },
     "Kolkata Knight Riders": {
-        "points": 11, "matches": 11,
-        "runs_for": 1648, "overs_faced": "187.4",
-        "runs_against": 1614, "overs_bowled": "189.1"
+        "points": 11, "matches": 12,
+        "runs_for": 1827, "overs_faced": "207.4",
+        "runs_against": 1797, "overs_bowled": "208.5"
     },
     "Lucknow Super Giants": {
         "points": 10, "matches": 11,
@@ -72,9 +72,9 @@ updated_points_data = {
         "runs_against": 2367, "overs_bowled": "235.0"
     },
     "Chennai Super Kings": {
-        "points": 4, "matches": 11,
-        "runs_for": 1841, "overs_faced": "218.4",
-        "runs_against": 1947, "overs_bowled": "204.1"
+        "points": 6, "matches": 12,
+        "runs_for": 2024, "overs_faced": "238.2",
+        "runs_against": 2126, "overs_bowled": "224.1"
     }
 }
 
@@ -92,7 +92,7 @@ squad_strength = {
 remaining_matches = [
     #{"home": "Sunrisers Hyderabad", "away": "Delhi Capitals", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
     #{"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
+    #{"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Dharamsala", "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     {"home": "Sunrisers Hyderabad", "away": "Kolkata Knight Riders", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
@@ -464,8 +464,8 @@ def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_ma
     seeds = np.random.randint(0, 1e9, size=processes)
     matches = override_matches if override_matches is not None else remaining_matches
 
-    with Pool(processes) as pool:
-        results = pool.map(run_pure_math_worker, [(seed, sims_per_core, matches) for seed in seeds])
+    with ThreadPoolExecutor(max_workers=processes) as executor:
+        results = list(executor.map(run_pure_math_worker, [(seed, sims_per_core, matches) for seed in seeds]))
 
     combined = {team: 0 for team in teams}
 
@@ -503,14 +503,9 @@ def run_parallel_simulations(total_sims=10000, processes=4, override_matches=Non
     seeds = np.random.randint(0, 1e9, size=processes)
     matches_to_use = override_matches if override_matches is not None else remaining_matches
 
-    with Pool(processes) as pool:
-        results = pool.map(parallel_worker, [
-            (seed, sims_per_core, True, matches_to_use.copy()) for seed in seeds
-        ])
-
-
-
-
+    with ThreadPoolExecutor(max_workers=processes) as executor:
+        results = list(
+            executor.map(parallel_worker, [(seed, sims_per_core, True, matches_to_use.copy()) for seed in seeds]))
 
     final_df = pd.concat(results)
     grouped = final_df.groupby("Team").agg({
