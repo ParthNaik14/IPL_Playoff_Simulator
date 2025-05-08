@@ -47,7 +47,7 @@ updated_points_data = {
         "runs_against": 1975, "overs_bowled": "214.2"
     },
     "Delhi Capitals": {
-        "points": 14, "matches": 12,
+        "points": 14, "matches":12,
         "runs_for": 1826, "overs_faced": "191.1",
         "runs_against": 1818, "overs_bowled": "197.5"
     },
