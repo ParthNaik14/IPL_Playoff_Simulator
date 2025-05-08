@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="Reduced parallel processes and fixed index for current table">
+    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated post m57">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ipl_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/ipl_simulator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -174,12 +173,21 @@
       <option name="project" value="LOCAL" />
       <updated>1746625817530</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="updated post m57">
+      <option name="closed" value="true" />
+      <created>1746641343181</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1746641343181</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Updated Post M 56" />
     <MESSAGE value="Reduced parallel processes and fixed index for current table" />
-    <option name="LAST_COMMIT_MESSAGE" value="Reduced parallel processes and fixed index for current table" />
+    <MESSAGE value="updated post m57" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated post m57" />
   </component>
 </project>

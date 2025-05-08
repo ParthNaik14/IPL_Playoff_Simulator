@@ -32,7 +32,7 @@ updated_points_data = {
         "runs_against": 1863, "overs_bowled": "207.5"
     },
     "Punjab Kings": {
-        "points": 15, "matches": 11,
+        "points": 16, "matches": 12,
         "runs_for": 1835, "overs_faced": "188.1",
         "runs_against": 1794, "overs_bowled": "191.2"
     },
@@ -47,7 +47,7 @@ updated_points_data = {
         "runs_against": 1975, "overs_bowled": "214.2"
     },
     "Delhi Capitals": {
-        "points": 13, "matches": 11,
+        "points": 14, "matches": 12,
         "runs_for": 1826, "overs_faced": "191.1",
         "runs_against": 1818, "overs_bowled": "197.5"
     },
