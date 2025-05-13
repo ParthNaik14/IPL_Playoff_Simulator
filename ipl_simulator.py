@@ -32,7 +32,7 @@ updated_points_data = {
         "runs_against": 1863, "overs_bowled": "207.5"
     },
     "Punjab Kings": {
-        "points": 16, "matches": 12,
+        "points": 15, "matches": 11,
         "runs_for": 1835, "overs_faced": "188.1",
         "runs_against": 1794, "overs_bowled": "191.2"
     },
@@ -47,7 +47,7 @@ updated_points_data = {
         "runs_against": 1975, "overs_bowled": "214.2"
     },
     "Delhi Capitals": {
-        "points": 14, "matches": 12,
+        "points": 13, "matches": 11,
         "runs_for": 1826, "overs_faced": "191.1",
         "runs_against": 1818, "overs_bowled": "197.5"
     },
@@ -93,19 +93,19 @@ remaining_matches = [
     #{"home": "Sunrisers Hyderabad", "away": "Delhi Capitals", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
     #{"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     #{"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
-    #{"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Dharamsala", "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
-    {"home": "Sunrisers Hyderabad", "away": "Kolkata Knight Riders", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
-    {"home": "Punjab Kings", "away": "Mumbai Indians", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
-    {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
-    {"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Chennai", "result": None, "margin": None, "applied": False},
-    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
-    {"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     {"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
+    {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
+    {"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    {"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
+    {"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
+    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
+    {"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     {"home": "Gujarat Titans", "away": "Chennai Super Kings", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False}
+    {"home": "Sunrisers Hyderabad", "away": "Kolkata Knight Riders", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    {"home": "Punjab Kings", "away": "Mumbai Indians", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
 ]
 
 def set_what_if_results(new_remaining_matches):
@@ -273,8 +273,8 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
                 continue  # Skip already applied What-if results
             home = match["home"]
             away = match["away"]
-            s_home = hybrid_weights[home] * 1.05
-            s_away = hybrid_weights[away] * 0.95
+            s_home = hybrid_weights[home] #* 1.05
+            s_away = hybrid_weights[away] #* 0.95
             prob_home_win = s_home / (s_home + s_away)
             winner, loser = (home, away) if np.random.rand() < prob_home_win else (away, home)
             points[winner] += 2
