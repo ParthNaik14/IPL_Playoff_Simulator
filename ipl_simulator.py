@@ -218,42 +218,43 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
 
     # Apply What-if match results
     for match in matches:
-        if match.get("applied"):
-            if match.get("result") == "Abandoned":
-                base_team_data[match["home"]]["points"] += 1
-                base_team_data[match["home"]]["matches"] += 1
-                base_team_data[match["away"]]["points"] += 1
-                base_team_data[match["away"]]["matches"] += 1
-            elif match.get("result") in [match["home"], match["away"]]:
-                winner = match["result"]
-                loser = match["away"] if winner == match["home"] else match["home"]
+        if match.get("applied") and match.get("result") in [match["home"], match["away"],
+                                                            "Abandoned/No Result (1 point each)"]:
+            home = match["home"]
+            away = match["away"]
+            result = match["result"]
 
+            if result == "Abandoned/No Result (1 point each)":
+                base_team_data[home]["points"] += 1
+                base_team_data[away]["points"] += 1
+                base_team_data[home]["matches"] += 1
+                base_team_data[away]["matches"] += 1
+                continue
 
-                # Get user-input stats
-                try:
-                    wr = match["runs"][winner]
-                    wo = overs_to_float(match["overs"][winner])
-                    lr = match["runs"][loser]
-                    lo = overs_to_float(match["overs"][loser])
-                except Exception as e:
-                    print(f"Invalid What-if format for match: {match}")
-                    continue
+            winner = result
+            loser = away if winner == home else home
 
-                # Update winner
-                base_team_data[winner]["points"] += 2
-                base_team_data[winner]["matches"] += 1
-                base_team_data[winner]["runs_for"] += wr
-                base_team_data[winner]["overs_faced"] = round(overs_to_float(base_team_data[winner]["overs_faced"]) + wo)
-                base_team_data[winner]["runs_against"] += lr
-                base_team_data[winner]["overs_bowled"] = round(overs_to_float(base_team_data[winner]["overs_bowled"]) + lo)
+            try:
+                wr = match["runs"][winner]
+                wo = overs_to_float(match["overs"][winner])
+                lr = match["runs"][loser]
+                lo = overs_to_float(match["overs"][loser])
+            except Exception as e:
+                print(f"Invalid What-if format for match: {match}")
+                continue
 
+            base_team_data[winner]["points"] += 2
+            base_team_data[winner]["matches"] += 1
+            base_team_data[winner]["runs_for"] += wr
+            base_team_data[winner]["overs_faced"] = round(base_team_data[winner]["overs_faced"] + wo)
+            base_team_data[winner]["runs_against"] += lr
+            base_team_data[winner]["overs_bowled"] = round(base_team_data[winner]["overs_bowled"] + lo)
 
-                # Update loser
-                base_team_data[loser]["matches"] += 1
-                base_team_data[loser]["runs_for"] += lr
-                base_team_data[loser]["overs_faced"] = round(overs_to_float(base_team_data[loser]["overs_faced"]) + lo)
-                base_team_data[loser]["runs_against"] += wr
-                base_team_data[loser]["overs_bowled"] = round(overs_to_float(base_team_data[loser]["overs_bowled"]) + wo)
+            base_team_data[loser]["matches"] += 1
+            base_team_data[loser]["runs_for"] += lr
+            base_team_data[loser]["overs_faced"] = round(base_team_data[loser]["overs_faced"] + lo)
+            base_team_data[loser]["runs_against"] += wr
+            base_team_data[loser]["overs_bowled"] = round(base_team_data[loser]["overs_bowled"] + wo, 3)
 
     # Use the modified data to compute base points and NRR
     base_points = {team: base_team_data[team]["points"] for team in teams}
@@ -378,20 +379,30 @@ def get_points_table_after_what_if(what_if_matches):
     }
 
     for match in what_if_matches:
-        if match.get("applied") and match.get("result") in [match["home"], match["away"]]:
-            winner = match["result"]
-            loser = match["away"] if winner == match["home"] else match["home"]
+        if match.get("applied") and match.get("result") in [match["home"], match["away"],
+                                                            "Abandoned/No Result (1 point each)"]:
+            home = match["home"]
+            away = match["away"]
+            result = match["result"]
 
-            # Safely extract and validate inputs
+            if result == "Abandoned/No Result (1 point each)":
+                team_data[home]["points"] += 1
+                team_data[away]["points"] += 1
+                team_data[home]["matches"] += 1
+                team_data[away]["matches"] += 1
+                continue
+
+            winner = result
+            loser = away if winner == home else home
+
             wr = match["runs"].get(winner)
             lr = match["runs"].get(loser)
             wo = overs_to_float(match["overs"].get(winner))
             lo = overs_to_float(match["overs"].get(loser))
 
             if wr is None or lr is None or wo is None or lo is None:
-                continue  # Skip if any input is missing
+                continue
 
-            # Update winner
             team_data[winner]["points"] += 2
             team_data[winner]["matches"] += 1
             team_data[winner]["runs_for"] += wr
@@ -399,7 +410,6 @@ def get_points_table_after_what_if(what_if_matches):
             team_data[winner]["runs_against"] += lr
             team_data[winner]["overs_bowled"] += lo
 
-            # Update loser
             team_data[loser]["matches"] += 1
             team_data[loser]["runs_for"] += lr
             team_data[loser]["overs_faced"] += lo
@@ -433,7 +443,14 @@ def run_pure_math_worker(args):
 
     for match in matches:
         if match.get("applied") and match.get("result"):
-            base_points[match["result"]] += 2
+            result = match["result"]
+            if result == "Abandoned/No Result (1 point each)":
+                home = match["home"]
+                away = match["away"]
+                base_points[home] += 1
+                base_points[away] += 1
+            else:
+                base_points[result] += 2
 
     for _ in range(sims):
         points = base_points.copy()
@@ -460,6 +477,7 @@ def run_pure_math_worker(args):
                 top4_counts[t] += spots / len(tied)
 
     return top4_counts
+
 
 
 

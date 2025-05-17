@@ -110,12 +110,9 @@ what_if_matches = []
 for i, match in enumerate(sim.remaining_matches):
     match_number = 70 - len(sim.remaining_matches) + i + 1
     with st.sidebar.expander(f"📌 Match {match_number}: {match['home']} vs {match['away']}", expanded=False):
-        options = ["", match["home"], match["away"], "Abandoned/No Result (1 point each)"]
         winner = st.selectbox(
             "Select Result",
-            options=options,
-            index=options.index(st.session_state.get(f"whatif_result_{i}", "")) if st.session_state.get(
-                f"whatif_result_{i}", "") in options else 0,
+            options=["", match["home"], match["away"], "Abandoned/No Result (1 point each)"],
             key=f"whatif_result_{i}"
         )
 
@@ -129,33 +126,32 @@ for i, match in enumerate(sim.remaining_matches):
             "runs": {},
             "overs": {}
         }
-        if winner == "Abandoned/No Result(1 point each)":
-            match_dict["result"] = "Abandoned"
-            match_dict["applied"] = True
-            match_dict["runs"] = {}  # Clear runs
-            match_dict["overs"] = {}  # Clear overs
-        elif winner:
-            loser = match["away"] if winner == match["home"] else match["home"]
+        if winner:
+            if winner == "Abandoned/No Result (1 point each)":
+                match_dict["result"] = "Abandoned/No Result (1 point each)"
+                match_dict["applied"] = True
+            else:
+                loser = match["away"] if winner == match["home"] else match["home"]
 
-            # Winner inputs
-            winner_runs = st.number_input(f"{winner} Runs", min_value=0, value=None,  key=f"winner_runs_{i}")
-            winner_overs = st.text_input(f"{winner} Overs (e.g., 19.3)", key=f"winner_overs_{i}")
+                # Winner inputs
+                winner_runs = st.number_input(f"{winner} Runs", min_value=0, value=None, key=f"winner_runs_{i}")
+                winner_overs = st.text_input(f"{winner} Overs (e.g., 19.3)", key=f"winner_overs_{i}")
 
-            # Loser inputs
-            loser_runs = st.number_input(f"{loser} Runs", min_value=0, value=None, key=f"loser_runs_{i}")
-            loser_overs = st.text_input(f"{loser} Overs (e.g., 20.0)", key=f"loser_overs_{i}")
+                # Loser inputs
+                loser_runs = st.number_input(f"{loser} Runs", min_value=0, value=None, key=f"loser_runs_{i}")
+                loser_overs = st.text_input(f"{loser} Overs (e.g., 20.0)", key=f"loser_overs_{i}")
 
-            # Fill in result
-            match_dict["result"] = winner
-            match_dict["applied"] = True
-            match_dict["runs"] = {
-                winner: winner_runs,
-                loser: loser_runs
-            }
-            match_dict["overs"] = {
-                winner: winner_overs,
-                loser: loser_overs
-            }
+                # Fill in result
+                match_dict["result"] = winner
+                match_dict["applied"] = True
+                match_dict["runs"] = {
+                    winner: winner_runs,
+                    loser: loser_runs
+                }
+                match_dict["overs"] = {
+                    winner: winner_overs,
+                    loser: loser_overs
+                }
 
         what_if_matches.append(match_dict)
         # DEBUG print to inspect What-if match structure
