@@ -110,11 +110,12 @@ what_if_matches = []
 for i, match in enumerate(sim.remaining_matches):
     match_number = 70 - len(sim.remaining_matches) + i + 1
     with st.sidebar.expander(f"📌 Match {match_number}: {match['home']} vs {match['away']}", expanded=False):
+        options = ["", match["home"], match["away"], "Abandoned/No Result (1 point each)"]
         winner = st.selectbox(
-            "Select Winner",
-            options=["", match["home"], match["away"], "Abandoned/No Result(1 point each)"],
-            index=0 if st.session_state.get(f"whatif_result_{i}", "") == "" else [match["home"], match["away"]].index(
-                st.session_state[f"whatif_result_{i}"]) + 1,
+            "Select Result",
+            options=options,
+            index=options.index(st.session_state.get(f"whatif_result_{i}", "")) if st.session_state.get(
+                f"whatif_result_{i}", "") in options else 0,
             key=f"whatif_result_{i}"
         )
 
