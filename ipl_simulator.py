@@ -27,7 +27,7 @@ teams = [
 
 updated_points_data = {
     "Royal Challengers Bengaluru": {
-        "points": 16, "matches": 11,
+        "points": 17, "matches": 12,
         "runs_for": 1938, "overs_faced": "205.1",
         "runs_against": 1863, "overs_bowled": "207.5"
     },
@@ -52,7 +52,7 @@ updated_points_data = {
         "runs_against": 1818, "overs_bowled": "197.5"
     },
     "Kolkata Knight Riders": {
-        "points": 11, "matches": 12,
+        "points": 12, "matches": 13,
         "runs_for": 1827, "overs_faced": "207.4",
         "runs_against": 1797, "overs_bowled": "208.5"
     },
@@ -93,7 +93,7 @@ remaining_matches = [
     #{"home": "Sunrisers Hyderabad", "away": "Delhi Capitals", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
     #{"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     #{"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
-    {"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
+    #{"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
     {"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
