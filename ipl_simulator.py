@@ -218,36 +218,42 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
 
     # Apply What-if match results
     for match in matches:
-        if match.get("applied") and match.get("result") in [match["home"], match["away"]]:
-            winner = match["result"]
-            loser = match["away"] if winner == match["home"] else match["home"]
+        if match.get("applied"):
+            if match.get("result") == "Abandoned":
+                base_team_data[match["home"]]["points"] += 1
+                base_team_data[match["home"]]["matches"] += 1
+                base_team_data[match["away"]]["points"] += 1
+                base_team_data[match["away"]]["matches"] += 1
+            elif match.get("result") in [match["home"], match["away"]]:
+                winner = match["result"]
+                loser = match["away"] if winner == match["home"] else match["home"]
 
 
-            # Get user-input stats
-            try:
-                wr = match["runs"][winner]
-                wo = overs_to_float(match["overs"][winner])
-                lr = match["runs"][loser]
-                lo = overs_to_float(match["overs"][loser])
-            except Exception as e:
-                print(f"Invalid What-if format for match: {match}")
-                continue
+                # Get user-input stats
+                try:
+                    wr = match["runs"][winner]
+                    wo = overs_to_float(match["overs"][winner])
+                    lr = match["runs"][loser]
+                    lo = overs_to_float(match["overs"][loser])
+                except Exception as e:
+                    print(f"Invalid What-if format for match: {match}")
+                    continue
 
-            # Update winner
-            base_team_data[winner]["points"] += 2
-            base_team_data[winner]["matches"] += 1
-            base_team_data[winner]["runs_for"] += wr
-            base_team_data[winner]["overs_faced"] = round(overs_to_float(base_team_data[winner]["overs_faced"]) + wo)
-            base_team_data[winner]["runs_against"] += lr
-            base_team_data[winner]["overs_bowled"] = round(overs_to_float(base_team_data[winner]["overs_bowled"]) + lo)
+                # Update winner
+                base_team_data[winner]["points"] += 2
+                base_team_data[winner]["matches"] += 1
+                base_team_data[winner]["runs_for"] += wr
+                base_team_data[winner]["overs_faced"] = round(overs_to_float(base_team_data[winner]["overs_faced"]) + wo)
+                base_team_data[winner]["runs_against"] += lr
+                base_team_data[winner]["overs_bowled"] = round(overs_to_float(base_team_data[winner]["overs_bowled"]) + lo)
 
 
-            # Update loser
-            base_team_data[loser]["matches"] += 1
-            base_team_data[loser]["runs_for"] += lr
-            base_team_data[loser]["overs_faced"] = round(overs_to_float(base_team_data[loser]["overs_faced"]) + lo)
-            base_team_data[loser]["runs_against"] += wr
-            base_team_data[loser]["overs_bowled"] = round(overs_to_float(base_team_data[loser]["overs_bowled"]) + wo)
+                # Update loser
+                base_team_data[loser]["matches"] += 1
+                base_team_data[loser]["runs_for"] += lr
+                base_team_data[loser]["overs_faced"] = round(overs_to_float(base_team_data[loser]["overs_faced"]) + lo)
+                base_team_data[loser]["runs_against"] += wr
+                base_team_data[loser]["overs_bowled"] = round(overs_to_float(base_team_data[loser]["overs_bowled"]) + wo)
 
     # Use the modified data to compute base points and NRR
     base_points = {team: base_team_data[team]["points"] for team in teams}

@@ -4,9 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated post m58">
+    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated for new schedule">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ipl_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/ipl_simulator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/streamlit_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/streamlit_app.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,7 +215,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746722540312</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="updated for new schedule">
+      <option name="closed" value="true" />
+      <created>1747152506736</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1747152506736</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -222,6 +231,7 @@
     <MESSAGE value="Reduced parallel processes and fixed index for current table" />
     <MESSAGE value="updated post m57" />
     <MESSAGE value="updated post m58" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated post m58" />
+    <MESSAGE value="updated for new schedule" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated for new schedule" />
   </component>
 </project>
