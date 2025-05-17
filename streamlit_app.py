@@ -74,33 +74,37 @@ if st.sidebar.button("🔄 Reset Everything"):
     ]
     sim.set_what_if_results(reset_matches)
 
-    # Clear all widget state variables
+    # Clear all widget inputs
     for i in range(len(sim.remaining_matches)):
-        st.session_state.pop(f"whatif_result_{i}", None)
+        st.session_state[f"whatif_result_{i}"] = ""
         st.session_state.pop(f"winner_runs_{i}", None)
         st.session_state.pop(f"winner_overs_{i}", None)
         st.session_state.pop(f"loser_runs_{i}", None)
         st.session_state.pop(f"loser_overs_{i}", None)
 
-    # Reset other simulation state
+    # Reset simulation state
     st.session_state.simulation_df = None
     st.session_state.styled_df = None
     st.session_state.match_number = 70 - len(sim.remaining_matches)
     st.session_state.timestamp = None
     st.session_state.what_if_applied = False
+
+    # Show success after rerun
     st.query_params["reset"] = "everything"
-    # Rerun to re-render widgets cleanly
     st.rerun()
+
 
 if st.sidebar.button("♻️ Reset What-if Scenarios"):
     for i in range(len(sim.remaining_matches)):
-        st.session_state.pop(f"whatif_result_{i}", None)
+        st.session_state[f"whatif_result_{i}"] = ""
         st.session_state.pop(f"winner_runs_{i}", None)
         st.session_state.pop(f"winner_overs_{i}", None)
         st.session_state.pop(f"loser_runs_{i}", None)
         st.session_state.pop(f"loser_overs_{i}", None)
+
     st.query_params["reset"] = "scenarios"
     st.rerun()
+
 
 # --- What-if Scenario Editor ---
 st.sidebar.markdown("### 🧪 What-if Scenario Editor")
