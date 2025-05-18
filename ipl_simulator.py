@@ -32,9 +32,9 @@ updated_points_data = {
         "runs_against": 1863, "overs_bowled": "207.5"
     },
     "Punjab Kings": {
-        "points": 15, "matches": 11,
-        "runs_for": 1835, "overs_faced": "188.1",
-        "runs_against": 1794, "overs_bowled": "191.2"
+        "points": 17, "matches": 12,
+        "runs_for": 2054, "overs_faced": "208.1",
+        "runs_against": 2003, "overs_bowled": "211.2"
     },
     "Mumbai Indians": {
         "points": 14, "matches": 12,
@@ -67,9 +67,9 @@ updated_points_data = {
         "runs_against": 1889, "overs_bowled": "182.4"
     },
     "Rajasthan Royals": {
-        "points": 6, "matches": 12,
-        "runs_for": 2206, "overs_faced": "235.5",
-        "runs_against": 2367, "overs_bowled": "235.0"
+        "points": 6, "matches": 13,
+        "runs_for": 2415, "overs_faced": "255.5",
+        "runs_against": 2586, "overs_bowled": "255.0"
     },
     "Chennai Super Kings": {
         "points": 6, "matches": 12,
@@ -94,7 +94,7 @@ remaining_matches = [
     #{"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     #{"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
     #{"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
+    #{"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     {"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
