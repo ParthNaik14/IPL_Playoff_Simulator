@@ -42,14 +42,14 @@ updated_points_data = {
         "runs_against": 1993, "overs_bowled": "238.1"
     },
     "Gujarat Titans": {
-        "points": 16, "matches": 11,
-        "runs_for": 2130, "overs_faced": "212.5",
-        "runs_against": 1975, "overs_bowled": "214.2"
+        "points": 16, "matches": 12,
+        "runs_for": 2335, "overs_faced": "231.5",
+        "runs_against": 2174, "overs_bowled": "234.2"
     },
     "Delhi Capitals": {
-        "points": 13, "matches": 11,
-        "runs_for": 1826, "overs_faced": "191.1",
-        "runs_against": 1818, "overs_bowled": "197.5"
+        "points": 13, "matches": 12,
+        "runs_for": 2025, "overs_faced": "211.1",
+        "runs_against": 2023, "overs_bowled": "216.5"
     },
     "Kolkata Knight Riders": {
         "points": 12, "matches": 13,
@@ -95,7 +95,7 @@ remaining_matches = [
     #{"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
     #{"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
     #{"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
-    {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    #{"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     {"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
