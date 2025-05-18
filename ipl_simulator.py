@@ -42,7 +42,7 @@ updated_points_data = {
         "runs_against": 1993, "overs_bowled": "238.1"
     },
     "Gujarat Titans": {
-        "points": 16, "matches": 12,
+        "points": 18, "matches": 12,
         "runs_for": 2335, "overs_faced": "231.5",
         "runs_against": 2174, "overs_bowled": "234.2"
     },
