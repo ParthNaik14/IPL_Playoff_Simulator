@@ -57,14 +57,14 @@ updated_points_data = {
         "runs_against": 1797, "overs_bowled": "208.5"
     },
     "Lucknow Super Giants": {
-        "points": 10, "matches": 11,
-        "runs_for": 2065, "overs_faced": "215.4",
-        "runs_against": 2141, "overs_bowled": "213.1"
+        "points": 10, "matches": 12,
+        "runs_for": 2270, "overs_faced": "235.4",
+        "runs_against": 2347, "overs_bowled": "231.3"
     },
     "Sunrisers Hyderabad": {
-        "points": 7, "matches": 11,
-        "runs_for": 1804, "overs_faced": "197.1",
-        "runs_against": 1889, "overs_bowled": "182.4"
+        "points": 9, "matches": 12,
+        "runs_for": 2010, "overs_faced": "215.3",
+        "runs_against": 2094, "overs_bowled": "202.4"
     },
     "Rajasthan Royals": {
         "points": 6, "matches": 13,
@@ -96,7 +96,7 @@ remaining_matches = [
     #{"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
     #{"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     #{"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
+    #{"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     {"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     {"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
