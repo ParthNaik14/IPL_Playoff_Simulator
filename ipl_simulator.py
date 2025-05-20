@@ -563,9 +563,10 @@ def fancy_highlight_half_split(df):
         # 0% (Dark Grey)
         if val == 0.00:
             return "background-color: #36454F; color: white"
-
-        # 0.01 - 44.99% (Red shades in 5% steps, avoid pinks)
-        if 0.01 <= val <= 44.99:
+        if 0.01 <= val <= 0.99:
+            return "background-color: #580000; color: white"
+        # 1.00 - 44.99% (Red shades in 5% steps, avoid pinks)
+        if 1.00 <= val <= 44.99:
             step = int(val // 5)  # 0 to 8
             red_values = [
                 "#880000", "#A02020", "#B03030", "#C04040", "#D05030",
