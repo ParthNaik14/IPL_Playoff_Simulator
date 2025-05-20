@@ -1,7 +1,6 @@
 import os
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
-
 import numpy as np
 import pandas as pd
 
@@ -557,29 +556,34 @@ def fancy_highlight_half_split(df):
         except:
             return ""
 
+        # 100% (Golden Yellow)
         if val == 100.00:
-            return "background-color: #FFD700; color: black; font-weight: bold"  # Golden yellow
+            return "background-color: #301934; color: white; font-weight: bold"
 
+        # 0% (Dark Grey)
         if val == 0.00:
-            return "background-color: #36454F; color: white"  # Grey
+            return "background-color: #36454F; color: white"
 
+        # 0.01 - 44.99% (Red shades in 5% steps, avoid pinks)
         if 0.01 <= val <= 44.99:
-            # Red zone: dark red (#8B0000) to light red (#FF9999)
-            r = 139 + int((val / 45.0) * (255 - 139))
-            g = 0 + int((val / 45.0) * (153 - 0))
-            b = 0 + int((val / 45.0) * (153 - 0))
-            hex_color = '#{:02X}{:02X}{:02X}'.format(r, g, b)
-            return f"background-color: {hex_color}; color: white"
+            step = int(val // 5)  # 0 to 8
+            red_values = [
+                "#880000", "#A02020", "#B03030", "#C04040", "#D05030",
+                "#E06030", "#EF7020", "#F88020", "#FF9020"  # Warmer oranges as it lightens
+            ]
+            color = red_values[min(step, len(red_values) - 1)]
+            return f"background-color: {color}; color: white"
 
-        if 45.0 <= val <= 50.0:
-            return "background-color: #FFFF66; color: black"  # Neutral yellow
+        # 45.00 - 50.00% (Yellow)
+        if 45.00 <= val <= 50.00:
+            return "background-color: #FFFF66; color: black"
 
-        if 50.01 <= val < 100.0:
-            # Green zone: light green (#A8F5A8) to dark green (#006400)
-            g = 245 - int(((val - 50.01) / 49.99) * 181)  # 245 → 64
-            r = 168 - int(((val - 50.01) / 49.99) * 168)  # 168 → 0
-            b = 168 - int(((val - 50.01) / 49.99) * 168)  # 168 → 0
-            hex_color = '#{:02X}{:02X}{:02X}'.format(r, g, b)
+        # 50.01 - 99.99% (Green shades)
+        if 50.01 <= val <= 99.99:
+            green_intensity = int(245 - ((val - 50.01) / 49.98) * 150)  # From 245 to 95
+            red_blue = int(168 - ((val - 50.01) / 49.98) * 168)  # From 168 to 0
+            r, g, b = red_blue, green_intensity, red_blue
+            hex_color = '#{0:02X}{1:02X}{2:02X}'.format(r, g, b)
             return f"background-color: {hex_color}; color: black"
 
         return ""
