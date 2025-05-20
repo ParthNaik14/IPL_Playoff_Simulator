@@ -67,14 +67,14 @@ updated_points_data = {
         "runs_against": 2094, "overs_bowled": "202.4"
     },
     "Rajasthan Royals": {
-        "points": 6, "matches": 13,
-        "runs_for": 2415, "overs_faced": "255.5",
-        "runs_against": 2586, "overs_bowled": "255.0"
+        "points": 8, "matches": 14,
+        "runs_for": 2603, "overs_faced": "273.0",
+        "runs_against": 2773, "overs_bowled": "275.0"
     },
     "Chennai Super Kings": {
-        "points": 6, "matches": 12,
-        "runs_for": 2024, "overs_faced": "238.2",
-        "runs_against": 2126, "overs_bowled": "224.1"
+        "points": 6, "matches": 13,
+        "runs_for": 2211, "overs_faced": "258.2",
+        "runs_against": 2314, "overs_bowled": "241.2"
     }
 }
 
@@ -83,8 +83,8 @@ updated_points_data = {
 
 
 squad_strength = {
-    "Mumbai Indians": 9.0, "Punjab Kings": 8.5, "Delhi Capitals": 9.0,
-    "Royal Challengers Bengaluru": 8.5, "Gujarat Titans": 8.5, "Kolkata Knight Riders": 8.5,
+    "Mumbai Indians": 9.0, "Punjab Kings": 8.5, "Delhi Capitals": 8.0,
+    "Royal Challengers Bengaluru": 8.5, "Gujarat Titans": 9.0, "Kolkata Knight Riders": 8.5,
     "Lucknow Super Giants": 8.0, "Rajasthan Royals": 7.5, "Sunrisers Hyderabad": 8.0,
     "Chennai Super Kings": 7.5
 }
@@ -97,7 +97,7 @@ remaining_matches = [
     #{"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     #{"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     #{"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
-    {"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    #{"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     {"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
     {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
