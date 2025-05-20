@@ -118,46 +118,6 @@ def set_what_if_results(new_remaining_matches):
         if match.get("applied"):
             print(match)
 
-
-def color_by_percentage(val):
-    if pd.isna(val):
-        return ""
-
-    try:
-        val = float(val)
-    except:
-        return ""
-
-    # 100% = Golden Yellow
-    if val == 100.0:
-        return "background-color: #FFD700; color: black; font-weight: bold"
-
-    # 0% = Grey
-    if val == 0.0:
-        return "background-color: #A9A9A9; color: white"
-
-    # 0.01–44.99% = Dark Red to Light Red
-    if 0.01 <= val <= 44.99:
-        red_shade = int(255 - (val / 45.0) * 100)  # 155 to 255
-        color = f"#FF{red_shade:02X}{red_shade:02X}"  # Example: #FFB3B3
-        return f"background-color: {color}; color: black"
-
-    # 45.00–50.00% = Yellow
-    if 45.0 <= val <= 50.0:
-        return "background-color: #FFFF66; color: black"
-
-    # 50.01–99.99% = Light Green to Dark Green
-    if 50.01 <= val < 100.0:
-        green_shade = int(252 - ((100 - val) / 50.0) * 140)  # 112 to 252
-        color = f"#{green_shade:02X}FC{green_shade:02X}"  # Example: #90FC90
-        return f"background-color: {color}; color: black"
-
-    return ""
-
-
-
-
-
 def simulate_nrr_change(winner_strength, loser_strength):
     strength_diff = winner_strength - loser_strength
     base = np.clip(0.2 * strength_diff, -0.1, 0.25)
@@ -584,7 +544,45 @@ def run_parallel_simulations(total_sims=10000, processes=4, override_matches=Non
 
 
 def fancy_highlight_half_split(df):
+    percentage_columns = [
+        "Top 2 (%)", "Top 4 (%)", "Top 2 Confirmed (%)",
+        "Top 4 Confirmed (%)", "Top 4 Pure Math (%)"
+    ]
 
+    def color_by_percentage(val):
+        if pd.isna(val):
+            return ""
+        try:
+            val = float(val)
+        except:
+            return ""
+
+        if val == 100.00:
+            return "background-color: #FFD700; color: black; font-weight: bold"  # Golden yellow
+
+        if val == 0.00:
+            return "background-color: #36454F; color: white"  # Grey
+
+        if 0.01 <= val <= 44.99:
+            # Red zone: dark red (#8B0000) to light red (#FF9999)
+            r = 139 + int((val / 45.0) * (255 - 139))
+            g = 0 + int((val / 45.0) * (153 - 0))
+            b = 0 + int((val / 45.0) * (153 - 0))
+            hex_color = '#{:02X}{:02X}{:02X}'.format(r, g, b)
+            return f"background-color: {hex_color}; color: white"
+
+        if 45.0 <= val <= 50.0:
+            return "background-color: #FFFF66; color: black"  # Neutral yellow
+
+        if 50.01 <= val < 100.0:
+            # Green zone: light green (#A8F5A8) to dark green (#006400)
+            g = 245 - int(((val - 50.01) / 49.99) * 181)  # 245 → 64
+            r = 168 - int(((val - 50.01) / 49.99) * 168)  # 168 → 0
+            b = 168 - int(((val - 50.01) / 49.99) * 168)  # 168 → 0
+            hex_color = '#{:02X}{:02X}{:02X}'.format(r, g, b)
+            return f"background-color: {hex_color}; color: black"
+
+        return ""
 
     styled = df.style.format({
         "Top 2 (%)": "{:.2f}", "Top 4 (%)": "{:.2f}",
@@ -592,25 +590,31 @@ def fancy_highlight_half_split(df):
         "Top 4 Pure Math (%)": "{:.2f}", "Avg Final NRR": "{:.3f}"
     })
 
-    for col in ["Top 4 (%)", "Top 2 (%)", "Top 4 Confirmed (%)", "Top 2 Confirmed (%)", "Top 4 Pure Math (%)"]:
-        styled = styled.map(color_by_percentage, subset=[col])
+    # Apply custom color logic to each percentage column
+    for col in percentage_columns:
+        styled = styled.map(color_by_percentage, subset=col)
 
+    # Gradient for Avg Final Points and NRR
     for col in ["Avg Final Points", "Avg Final NRR"]:
         styled = styled.background_gradient(cmap="Blues", subset=col)
 
+    # Bold top 4 rows
     styled = styled.set_properties(subset=pd.IndexSlice[:4, :], **{"font-weight": "bold"})
+
+    # Center alignment
     styled = styled.set_properties(**{"text-align": "center", "vertical-align": "middle"})
 
+    # Color team cells using your team_colors dict
     def color_team_cells(val):
         if val in team_colors:
             c = team_colors[val]
-            return f"background-color: {c['bg']}; color: {c['text']}"#; font-weight: bold"
+            return f"background-color: {c['bg']}; color: {c['text']}"
         return ""
 
     styled = styled.map(color_team_cells, subset=["Team"])
 
-
     return styled
+
 
 
 # Run the simulation
