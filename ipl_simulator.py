@@ -119,6 +119,43 @@ def set_what_if_results(new_remaining_matches):
             print(match)
 
 
+def color_by_percentage(val):
+    if pd.isna(val):
+        return ""
+
+    try:
+        val = float(val)
+    except:
+        return ""
+
+    # 100% = Golden Yellow
+    if val == 100.0:
+        return "background-color: #FFD700; color: black; font-weight: bold"
+
+    # 0% = Grey
+    if val == 0.0:
+        return "background-color: #A9A9A9; color: white"
+
+    # 0.01–44.99% = Dark Red to Light Red
+    if 0.01 <= val <= 44.99:
+        red_shade = int(255 - (val / 45.0) * 100)  # 155 to 255
+        color = f"#FF{red_shade:02X}{red_shade:02X}"  # Example: #FFB3B3
+        return f"background-color: {color}; color: black"
+
+    # 45.00–50.00% = Yellow
+    if 45.0 <= val <= 50.0:
+        return "background-color: #FFFF66; color: black"
+
+    # 50.01–99.99% = Light Green to Dark Green
+    if 50.01 <= val < 100.0:
+        green_shade = int(252 - ((100 - val) / 50.0) * 140)  # 112 to 252
+        color = f"#{green_shade:02X}FC{green_shade:02X}"  # Example: #90FC90
+        return f"background-color: {color}; color: black"
+
+    return ""
+
+
+
 
 
 def simulate_nrr_change(winner_strength, loser_strength):
@@ -547,14 +584,7 @@ def run_parallel_simulations(total_sims=10000, processes=4, override_matches=Non
 
 
 def fancy_highlight_half_split(df):
-    top_half = df.index <6
-    bottom_half = df.index >=6
 
-    df_styled = df.copy()
-    positional_map = {5: 0.0, 6: 0.25, 7: 0.5, 8: 0.75, 9: 1.0}
-    for col in ["Top 2 (%)", "Top 4 (%)", "Top 2 Confirmed (%)", "Top 4 Confirmed (%)", "Top 4 Pure Math (%)"]:
-        for idx in positional_map:
-            df_styled.at[idx, col] = positional_map[idx]
 
     styled = df.style.format({
         "Top 2 (%)": "{:.2f}", "Top 4 (%)": "{:.2f}",
@@ -562,9 +592,8 @@ def fancy_highlight_half_split(df):
         "Top 4 Pure Math (%)": "{:.2f}", "Avg Final NRR": "{:.3f}"
     })
 
-    for col in ["Top 2 (%)", "Top 4 (%)", "Top 2 Confirmed (%)", "Top 4 Confirmed (%)", "Top 4 Pure Math (%)"]:
-        styled = styled.background_gradient(cmap="Greens", subset=pd.IndexSlice[top_half, col]) \
-                         .background_gradient(cmap="Reds", subset=pd.IndexSlice[bottom_half, col], gmap=df_styled[col])
+    for col in ["Top 4 (%)", "Top 2 (%)", "Top 4 Confirmed (%)", "Top 2 Confirmed (%)", "Top 4 Pure Math (%)"]:
+        styled = styled.map(color_by_percentage, subset=[col])
 
     for col in ["Avg Final Points", "Avg Final NRR"]:
         styled = styled.background_gradient(cmap="Blues", subset=col)
