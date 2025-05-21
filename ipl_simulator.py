@@ -36,9 +36,9 @@ updated_points_data = {
         "runs_against": 2003, "overs_bowled": "211.2"
     },
     "Mumbai Indians": {
-        "points": 14, "matches": 12,
-        "runs_for": 2108, "overs_faced": "221.2",
-        "runs_against": 1993, "overs_bowled": "238.1"
+        "points": 14, "matches": 13,
+        "runs_for": 2288, "overs_faced": "241.2",
+        "runs_against": 2114, "overs_bowled": "258.1"
     },
     "Gujarat Titans": {
         "points": 18, "matches": 12,
@@ -46,9 +46,9 @@ updated_points_data = {
         "runs_against": 2174, "overs_bowled": "234.2"
     },
     "Delhi Capitals": {
-        "points": 13, "matches": 12,
-        "runs_for": 2025, "overs_faced": "211.1",
-        "runs_against": 2023, "overs_bowled": "216.5"
+        "points": 13, "matches": 13,
+        "runs_for": 2146, "overs_faced": "231.1",
+        "runs_against": 2203, "overs_bowled": "236.5"
     },
     "Kolkata Knight Riders": {
         "points": 12, "matches": 13,
