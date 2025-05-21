@@ -36,7 +36,7 @@ updated_points_data = {
         "runs_against": 2003, "overs_bowled": "211.2"
     },
     "Mumbai Indians": {
-        "points": 14, "matches": 13,
+        "points": 16, "matches": 13,
         "runs_for": 2288, "overs_faced": "241.2",
         "runs_against": 2114, "overs_bowled": "258.1"
     },
@@ -97,7 +97,7 @@ remaining_matches = [
     #{"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     #{"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     #{"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
+    #{"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     {"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
     {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
