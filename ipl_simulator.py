@@ -27,7 +27,7 @@ teams = [
 updated_points_data = {
     "Royal Challengers Bengaluru": {
         "points": 17, "matches": 13,
-        "runs_for": 2169, "overs_faced": "225.1",
+        "runs_for": 2127, "overs_faced": "225.1",
         "runs_against": 2094, "overs_bowled": "227.5"
     },
     "Punjab Kings": {
