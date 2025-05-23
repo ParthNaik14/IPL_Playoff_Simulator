@@ -4,7 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated with new stylization">
+    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated post m63">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ipl_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/ipl_simulator.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -341,7 +342,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747849570126</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="updated post m63">
+      <option name="closed" value="true" />
+      <created>1747849775054</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1747849775054</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -355,6 +364,7 @@
     <MESSAGE value="updated post m60" />
     <MESSAGE value="updated post m62" />
     <MESSAGE value="updated with new stylization" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated with new stylization" />
+    <MESSAGE value="updated post m63" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated post m63" />
   </component>
 </project>
