@@ -40,9 +40,7 @@ if st.sidebar.button("🚀 Run Simulation"):
         df = sim.run_parallel_simulations(total_simulations, processes=processes)
         pure_math = sim.run_pure_math_simulation_parallel(total_simulations, processes=processes)
 
-        # Insert "Top 4 Pure Math (%)" before Avg Final Points
-        insert_idx = df.columns.get_loc("Avg Final Points")
-        df.insert(loc=insert_idx, column="Top 4 Pure Math (%)", value=df["Team"].map(pure_math))
+        df["Top 4 Pure Math (%)"] = df["Team"].map(pure_math)
 
         # Fix index from 1 to 10
         df.index = range(1, len(df) + 1)
@@ -175,8 +173,7 @@ if st.sidebar.button("✅ Apply What-if Scenarios"):
         pure_math = sim.run_pure_math_simulation_parallel(total_simulations, processes=processes, override_matches=what_if_matches)
 
 
-        insert_idx = df.columns.get_loc("Avg Final Points")
-        df.insert(loc=insert_idx, column="Top 4 Pure Math (%)", value=df["Team"].map(pure_math))
+        df["Top 4 Pure Math (%)"] = df["Team"].map(pure_math)
         df.index = range(1, len(df) + 1)
         styled_df = sim.fancy_highlight_half_split(df.copy())
 
@@ -294,29 +291,9 @@ if st.session_state.simulation_df is not None:
     else:
         st.subheader(f"📝 Simulation Results - Post Match {st.session_state.match_number:02d}")
 
-    # Toggle to show/hide advanced metrics
-    show_advanced = st.checkbox("Show Avg Final Points & NRR", value=False)
-
-    styled_df = st.session_state.styled_df
-
-    # Reset styles before conditionally hiding columns
-    styled_df = styled_df.set_table_styles([])
-
-    if not show_advanced:
-        hidden_styles = []
-        for col in ["Avg Final Points", "Avg Final NRR"]:
-            try:
-                col_idx = styled_df.data.columns.get_loc(col)
-                hidden_styles.extend([
-                    {"selector": f"th.col{col_idx}", "props": [("display", "none")]},
-                    {"selector": f"td.col{col_idx}", "props": [("display", "none")]}
-                ])
-            except KeyError:
-                pass
-        styled_df = styled_df.set_table_styles(hidden_styles, overwrite=False)
-
     # Show styled HTML table
-    st.markdown(styled_df.to_html(escape=False), unsafe_allow_html=True)
+    if st.session_state.get("styled_df") is not None:
+        st.markdown(st.session_state.styled_df.to_html(escape=False), unsafe_allow_html=True)
 
     # --- Download Buttons ---
     csv_buffer = io.StringIO()

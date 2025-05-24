@@ -3,6 +3,7 @@ from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 import pandas as pd
+import copy
 
 team_colors = {
     "Gujarat Titans": {"bg": "#0A0A0A", "text": "#F5C518"},
@@ -150,28 +151,7 @@ def calculate_nrr(team_data):
     return round((rf / of) - (ra / ob), 3)
 
 
-def custom_even_round(x):
-    whole = int(x)
-    return int(np.floor(x)) if whole % 2 == 0 else int(np.ceil(x))
 
-def adjust_final_points(points_dict, qualification_order):
-    total = sum(points_dict.values())
-    sorted_teams = qualification_order.copy()
-    while total != 140:
-        if total < 140:
-            for team in sorted_teams:
-                points_dict[team] += 2
-                total += 2
-                if total == 140:
-                    break
-        elif total > 140:
-            for team in reversed(sorted_teams):
-                if points_dict[team] > 2:
-                    points_dict[team] -= 2
-                    total -= 2
-                    if total == 140:
-                        break
-    return points_dict
 
 
 def run_adjusted_simulation(num_simulations, what_if=False, override_matches=None):
@@ -306,15 +286,12 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
             cumulative_points[team] += points[team]
             cumulative_nrr[team] += nrrs[team]
 
-    avg_points = {team: custom_even_round(cumulative_points[team] / num_simulations) for team in teams}
-    avg_nrrs = {team: round(cumulative_nrr[team] / num_simulations, 3) for team in teams}
     qualifications = {team: round((top4_counts[team] / num_simulations) * 100, 2) for team in teams}
     top2_qualifications = {team: round((top2_counts[team] / num_simulations) * 100, 2) for team in teams}
     top4_confirmed_points_only_pct = {team: round((top4_confirmed_points_only[team] / num_simulations) * 100, 2) for team in teams}
     top2_confirmed_points_only_pct = {team: round((top2_confirmed_points_only[team] / num_simulations) * 100, 2) for team in teams}
 
     sorted_by_qual = sorted(teams, key=lambda t: qualifications[t], reverse=True)
-    adjusted_points = adjust_final_points(avg_points.copy(), sorted_by_qual)
 
     results = pd.DataFrame([
         (
@@ -324,14 +301,12 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
             top4_confirmed_points_only_pct[team],
             top2_confirmed_points_only_pct[team],
             None,
-            adjusted_points[team],
-            avg_nrrs[team]
         )
         for team in sorted_by_qual
     ], columns=[
         "Team", "Top 4 (%)", "Top 2 (%)",
         "Top 4 Confirmed (%)", "Top 2 Confirmed (%)",
-        "Top 4 Pure Math (%)", "Avg Final Points", "Avg Final NRR"
+        "Top 4 Pure Math (%)"
     ])
 
     return results
@@ -485,7 +460,7 @@ def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_ma
     matches = override_matches if override_matches is not None else remaining_matches
 
     with ThreadPoolExecutor(max_workers=processes) as executor:
-        results = list(executor.map(run_pure_math_worker, [(seed, sims_per_core, matches) for seed in seeds]))
+        results = list(executor.map(run_pure_math_worker, [(seed, sims_per_core, copy.deepcopy(matches)) for seed in seeds]))
 
     combined = {team: 0 for team in teams}
 
@@ -524,20 +499,16 @@ def run_parallel_simulations(total_sims=10000, processes=4, override_matches=Non
     matches_to_use = override_matches if override_matches is not None else remaining_matches
 
     with ThreadPoolExecutor(max_workers=processes) as executor:
-        results = list(
-            executor.map(parallel_worker, [(seed, sims_per_core, True, matches_to_use.copy()) for seed in seeds]))
+        results = list(executor.map(parallel_worker, [(seed, sims_per_core, True, copy.deepcopy(matches_to_use)) for seed in seeds]))
 
     final_df = pd.concat(results)
     grouped = final_df.groupby("Team").agg({
         "Top 4 (%)": "mean",
         "Top 2 (%)": "mean",
         "Top 4 Confirmed (%)": "mean",
-        "Top 2 Confirmed (%)": "mean",
-        "Avg Final Points": "mean",
-        "Avg Final NRR": "mean"
+        "Top 2 Confirmed (%)": "mean"
     }).reset_index()
-    grouped["Avg Final Points"] = (grouped["Avg Final Points"] / 2).round().astype(int) * 2
-    grouped = grouped.sort_values(by=["Top 4 (%)", "Avg Final Points", "Avg Final NRR"], ascending=[False, False, False]).reset_index(drop=True)
+    grouped = grouped.sort_values(by=["Top 4 (%)", "Top 2 (%)"], ascending=[False, False]).reset_index(drop=True)
     return grouped
 
 
@@ -592,16 +563,12 @@ def fancy_highlight_half_split(df):
     styled = df.style.format({
         "Top 2 (%)": "{:.2f}", "Top 4 (%)": "{:.2f}",
         "Top 2 Confirmed (%)": "{:.2f}", "Top 4 Confirmed (%)": "{:.2f}",
-        "Top 4 Pure Math (%)": "{:.2f}", "Avg Final NRR": "{:.3f}"
+        "Top 4 Pure Math (%)": "{:.2f}"
     })
 
     # Apply custom color logic to each percentage column
     for col in percentage_columns:
         styled = styled.map(color_by_percentage, subset=col)
-
-    # Gradient for Avg Final Points and NRR
-    for col in ["Avg Final Points", "Avg Final NRR"]:
-        styled = styled.background_gradient(cmap="Blues", subset=col)
 
     # Bold top 4 rows
     styled = styled.set_properties(subset=pd.IndexSlice[:4, :], **{"font-weight": "bold"})
@@ -630,9 +597,9 @@ def run_full_simulation_and_prompt():
     pure_math = run_pure_math_simulation_parallel(10000, processes=16)
 
     # Insert "Top 4 Pure Math (%)" just before "Avg Final Points"
-    pure_math_series = df["Team"].map(pure_math)
-    insert_position = df.columns.get_loc("Avg Final Points")
-    df.insert(loc=insert_position, column="Top 4 Pure Math (%)", value=pure_math_series)
+
+    df["Top 4 Pure Math (%)"] = df["Team"].map(pure_math)
+
 
     styled_df = fancy_highlight_half_split(df)
     print(df)
