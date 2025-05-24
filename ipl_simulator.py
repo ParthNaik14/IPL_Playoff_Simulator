@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 import pandas as pd
 
@@ -99,12 +99,12 @@ remaining_matches = [
     #{"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     #{"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
     #{"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
-    #{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
+    #{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     {"home": "Gujarat Titans", "away": "Chennai Super Kings", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
     {"home": "Sunrisers Hyderabad", "away": "Kolkata Knight Riders", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings", "away": "Mumbai Indians", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False}
 ]
 
 def set_what_if_results(new_remaining_matches):
@@ -242,13 +242,13 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
             base_team_data[winner]["points"] += 2
             base_team_data[winner]["matches"] += 1
             base_team_data[winner]["runs_for"] += wr
-            base_team_data[winner]["overs_faced"] = round(base_team_data[winner]["overs_faced"] + wo)
+            base_team_data[winner]["overs_faced"] = round(base_team_data[winner]["overs_faced"] + wo, 3)
             base_team_data[winner]["runs_against"] += lr
-            base_team_data[winner]["overs_bowled"] = round(base_team_data[winner]["overs_bowled"] + lo)
+            base_team_data[winner]["overs_bowled"] = round(base_team_data[winner]["overs_bowled"] + lo, 3)
 
             base_team_data[loser]["matches"] += 1
             base_team_data[loser]["runs_for"] += lr
-            base_team_data[loser]["overs_faced"] = round(base_team_data[loser]["overs_faced"] + lo)
+            base_team_data[loser]["overs_faced"] = round(base_team_data[loser]["overs_faced"] + lo, 3)
             base_team_data[loser]["runs_against"] += wr
             base_team_data[loser]["overs_bowled"] = round(base_team_data[loser]["overs_bowled"] + wo, 3)
 
@@ -484,7 +484,7 @@ def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_ma
     seeds = np.random.randint(0, 1e9, size=processes)
     matches = override_matches if override_matches is not None else remaining_matches
 
-    with ThreadPoolExecutor(max_workers=processes) as executor:
+    with ProcessPoolExecutor(max_workers=processes) as executor:
         results = list(executor.map(run_pure_math_worker, [(seed, sims_per_core, matches) for seed in seeds]))
 
     combined = {team: 0 for team in teams}
@@ -523,7 +523,7 @@ def run_parallel_simulations(total_sims=10000, processes=4, override_matches=Non
     seeds = np.random.randint(0, 1e9, size=processes)
     matches_to_use = override_matches if override_matches is not None else remaining_matches
 
-    with ThreadPoolExecutor(max_workers=processes) as executor:
+    with ProcessPoolExecutor(max_workers=processes) as executor:
         results = list(
             executor.map(parallel_worker, [(seed, sims_per_core, True, matches_to_use.copy()) for seed in seeds]))
 
