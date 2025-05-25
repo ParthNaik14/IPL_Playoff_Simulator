@@ -42,9 +42,9 @@ updated_points_data = {
         "runs_against": 2114, "overs_bowled": "258.1"
     },
     "Gujarat Titans": {
-        "points": 18, "matches": 13,
-        "runs_for": 2537, "overs_faced": "251.5",
-        "runs_against": 2409, "overs_bowled": "254.2"
+        "points": 18, "matches": 14,
+        "runs_for": 2684, "overs_faced": "271.5",
+        "runs_against": 2639, "overs_bowled": "274.2"
     },
     "Delhi Capitals": {
         "points": 15, "matches": 14,
@@ -72,9 +72,9 @@ updated_points_data = {
         "runs_against": 2773, "overs_bowled": "275.0"
     },
     "Chennai Super Kings": {
-        "points": 6, "matches": 13,
-        "runs_for": 2211, "overs_faced": "258.2",
-        "runs_against": 2314, "overs_bowled": "241.2"
+        "points": 8, "matches": 14,
+        "runs_for": 2441, "overs_faced": "278.2",
+        "runs_against": 2461, "overs_bowled": "261.2"
     }
 }
 
@@ -102,7 +102,7 @@ remaining_matches = [
     #{"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
     #{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
     #{"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
-    {"home": "Gujarat Titans", "away": "Chennai Super Kings", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
+    #{"home": "Gujarat Titans", "away": "Chennai Super Kings", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
     {"home": "Sunrisers Hyderabad", "away": "Kolkata Knight Riders", "venue": "Delhi", "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings", "away": "Mumbai Indians", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False}
