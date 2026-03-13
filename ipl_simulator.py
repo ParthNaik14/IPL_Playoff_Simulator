@@ -18,117 +18,199 @@ team_colors = {
     "Sunrisers Hyderabad": {"bg": "#F44336", "text": "#000000"}
 }
 
-
 teams = [
     "Delhi Capitals", "Gujarat Titans", "Royal Challengers Bengaluru", "Punjab Kings",
     "Kolkata Knight Riders", "Lucknow Super Giants", "Rajasthan Royals",
     "Mumbai Indians", "Chennai Super Kings", "Sunrisers Hyderabad"
 ]
 
+# ---------------------------------------------------------------------------
+# IPL 2026 — reset points table (season not started)
+# ---------------------------------------------------------------------------
 updated_points_data = {
     "Royal Challengers Bengaluru": {
-        "points": 17, "matches": 13,
-        "runs_for": 2127, "overs_faced": "225.1",
-        "runs_against": 2094, "overs_bowled": "227.5"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Punjab Kings": {
-        "points": 17, "matches": 13,
-        "runs_for": 2260, "overs_faced": "228.1",
-        "runs_against": 2211, "overs_bowled": "230.5"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Mumbai Indians": {
-        "points": 16, "matches": 13,
-        "runs_for": 2288, "overs_faced": "241.2",
-        "runs_against": 2114, "overs_bowled": "258.1"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Gujarat Titans": {
-        "points": 18, "matches": 14,
-        "runs_for": 2684, "overs_faced": "271.5",
-        "runs_against": 2639, "overs_bowled": "274.2"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Delhi Capitals": {
-        "points": 15, "matches": 14,
-        "runs_for": 2354, "overs_faced": "250.4",
-        "runs_against": 2409, "overs_bowled": "256.5"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Kolkata Knight Riders": {
-        "points": 12, "matches": 13,
-        "runs_for": 1827, "overs_faced": "207.4",
-        "runs_against": 1797, "overs_bowled": "208.5"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Lucknow Super Giants": {
-        "points": 12, "matches": 13,
-        "runs_for": 2505, "overs_faced": "255.4",
-        "runs_against": 2549, "overs_bowled": "251.3"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Sunrisers Hyderabad": {
-        "points": 11, "matches": 13,
-        "runs_for": 2241, "overs_faced": "235.3",
-        "runs_against": 2283, "overs_bowled": "222.4"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Rajasthan Royals": {
-        "points": 8, "matches": 14,
-        "runs_for": 2603, "overs_faced": "273.0",
-        "runs_against": 2773, "overs_bowled": "275.0"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     },
     "Chennai Super Kings": {
-        "points": 8, "matches": 14,
-        "runs_for": 2441, "overs_faced": "278.2",
-        "runs_against": 2461, "overs_bowled": "261.2"
+        "points": 0, "matches": 0,
+        "runs_for": 0, "overs_faced": "0.0",
+        "runs_against": 0, "overs_bowled": "0.0"
     }
 }
 
-
-
-
-
-squad_strength = {
-    "Mumbai Indians": 9.0, "Punjab Kings": 8.5, "Delhi Capitals": 8.0,
-    "Royal Challengers Bengaluru": 8.5, "Gujarat Titans": 9.0, "Kolkata Knight Riders": 8.5,
-    "Lucknow Super Giants": 8.0, "Rajasthan Royals": 7.5, "Sunrisers Hyderabad": 8.0,
-    "Chennai Super Kings": 7.5
+# ---------------------------------------------------------------------------
+# Elo ratings — seeded from 2025 season performance + squad changes for 2026
+# Update via update_elo() after each real match is committed
+# ---------------------------------------------------------------------------
+elo_ratings = {
+    "Royal Challengers Bengaluru": 1530,  # Defending champions
+    "Gujarat Titans":              1510,
+    "Mumbai Indians":              1505,
+    "Punjab Kings":                1495,
+    "Kolkata Knight Riders":       1490,
+    "Delhi Capitals":              1480,
+    "Lucknow Super Giants":        1470,
+    "Sunrisers Hyderabad":         1465,
+    "Rajasthan Royals":            1455,
+    "Chennai Super Kings":         1450,
 }
 
+ELO_K = 32  # Higher K = faster adaptation, appropriate for a short tournament
+
+def update_elo(winner, loser):
+    """Call this each time you commit a real match result."""
+    wr = elo_ratings[winner]
+    lr = elo_ratings[loser]
+    expected_w = 1 / (1 + 10 ** ((lr - wr) / 400))
+    elo_ratings[winner] = round(elo_ratings[winner] + ELO_K * (1 - expected_w), 2)
+    elo_ratings[loser]  = round(elo_ratings[loser]  + ELO_K * (0 - (1 - expected_w)), 2)
+
+# ---------------------------------------------------------------------------
+# Recent form — last 5 results per team (1 = win, 0 = loss), oldest first
+# Update by appending to the list and trimming to last 5 after each match
+# ---------------------------------------------------------------------------
+recent_form = {
+    "Royal Challengers Bengaluru": [],
+    "Gujarat Titans":              [],
+    "Mumbai Indians":              [],
+    "Punjab Kings":                [],
+    "Kolkata Knight Riders":       [],
+    "Delhi Capitals":              [],
+    "Lucknow Super Giants":        [],
+    "Sunrisers Hyderabad":         [],
+    "Rajasthan Royals":            [],
+    "Chennai Super Kings":         [],
+}
+
+FORM_WEIGHTS = [0.10, 0.15, 0.20, 0.25, 0.30]  # oldest → newest
+
+def update_recent_form(winner, loser):
+    """Call alongside update_elo() after each real match."""
+    for team, result in [(winner, 1), (loser, 0)]:
+        recent_form[team].append(result)
+        recent_form[team] = recent_form[team][-5:]  # keep last 5 only
+
+def get_form_score(team):
+    results = recent_form[team]
+    if not results:
+        return 0.5  # neutral prior when no games played yet
+    w = FORM_WEIGHTS[-len(results):]  # align weights to available results
+    total_w = sum(w)
+    return sum(wi * r for wi, r in zip(w, results)) / total_w
+
+# ---------------------------------------------------------------------------
+# Venue-specific home advantage multipliers
+# ---------------------------------------------------------------------------
+home_advantage = {
+    "MUMBAI":     1.08,
+    "CHENNAI":    1.07,
+    "KOLKATA":    1.06,
+    "BENGALURU":  1.05,
+    "HYDERABAD":  1.05,
+    "AHMEDABAD":  1.04,
+    "JAIPUR":     1.04,
+    "DELHI":      1.03,
+    "LUCKNOW":    1.03,
+    "MULLANPUR":  1.03,
+    "GUWAHATI":   1.02,  # Neutral-ish venue used by RR/CSK
+    "DHARAMSALA": 1.03,
+}
+
+def get_home_boost(venue):
+    return home_advantage.get(venue.upper().strip(), 1.03)
+
+# ---------------------------------------------------------------------------
+# IPL 2026 Schedule — first 20 matches from ESPNcricinfo
+# Total matches in league stage = 70; remaining will be added progressively
+# ---------------------------------------------------------------------------
 remaining_matches = [
-    #{"home": "Sunrisers Hyderabad", "away": "Delhi Capitals", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
-    #{"home": "Mumbai Indians", "away": "Gujarat Titans", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
-    #{"home": "Kolkata Knight Riders", "away": "Chennai Super Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
-    #{"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
-    #{"home": "Rajasthan Royals", "away": "Punjab Kings", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
-    #{"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
-    #{"home": "Lucknow Super Giants", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
-    #{"home": "Chennai Super Kings", "away": "Rajasthan Royals", "venue": "Delhi", "result": None, "margin": None, "applied": False},
-    #{"home": "Mumbai Indians", "away": "Delhi Capitals", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
-    #{"home": "Gujarat Titans", "away": "Lucknow Super Giants", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
-    #{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
-    #{"home": "Punjab Kings", "away": "Delhi Capitals", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
-    #{"home": "Gujarat Titans", "away": "Chennai Super Kings", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
-    {"home": "Sunrisers Hyderabad", "away": "Kolkata Knight Riders", "venue": "Delhi", "result": None, "margin": None, "applied": False},
-    {"home": "Punjab Kings", "away": "Mumbai Indians", "venue": "Jaipur", "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants", "away": "Royal Challengers Bengaluru", "venue": "Lucknow", "result": None, "margin": None, "applied": False}
+    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad",  "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},
+    {"home": "Mumbai Indians",              "away": "Kolkata Knight Riders", "venue": "Mumbai",     "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals",            "away": "Chennai Super Kings",   "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
+    {"home": "Punjab Kings",                "away": "Gujarat Titans",        "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants",        "away": "Delhi Capitals",        "venue": "Lucknow",    "result": None, "margin": None, "applied": False},
+    {"home": "Kolkata Knight Riders",       "away": "Sunrisers Hyderabad",   "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
+    {"home": "Chennai Super Kings",         "away": "Punjab Kings",          "venue": "Chennai",    "result": None, "margin": None, "applied": False},
+    {"home": "Delhi Capitals",              "away": "Mumbai Indians",        "venue": "Delhi",      "result": None, "margin": None, "applied": False},
+    {"home": "Gujarat Titans",              "away": "Rajasthan Royals",      "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},
+    {"home": "Sunrisers Hyderabad",         "away": "Lucknow Super Giants",  "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},
+    {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings",   "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},
+    {"home": "Kolkata Knight Riders",       "away": "Punjab Kings",          "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals",            "away": "Mumbai Indians",        "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
+    {"home": "Delhi Capitals",              "away": "Gujarat Titans",        "venue": "Delhi",      "result": None, "margin": None, "applied": False},
+    {"home": "Kolkata Knight Riders",       "away": "Lucknow Super Giants",  "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals",            "away": "Royal Challengers Bengaluru", "venue": "Guwahati", "result": None, "margin": None, "applied": False},
+    {"home": "Punjab Kings",                "away": "Sunrisers Hyderabad",   "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},
+    {"home": "Chennai Super Kings",         "away": "Delhi Capitals",        "venue": "Chennai",    "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants",        "away": "Gujarat Titans",        "venue": "Lucknow",    "result": None, "margin": None, "applied": False},
+    {"home": "Mumbai Indians",              "away": "Royal Challengers Bengaluru", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
 ]
+
+TOTAL_MATCHES = 70  # full league stage
 
 def set_what_if_results(new_remaining_matches):
     global remaining_matches
     remaining_matches = new_remaining_matches
-
-    # DEBUG: Show received What-if matches
     print("\n--- WHAT-IF MATCHES RECEIVED ---")
     for match in remaining_matches:
         if match.get("applied"):
             print(match)
 
-def simulate_nrr_change(winner_strength, loser_strength):
-    strength_diff = winner_strength - loser_strength
-    base = np.clip(0.2 * strength_diff, -0.1, 0.25)
-    noise = np.random.normal(0.05, 0.05)
-    return round(np.clip(base + noise, -0.3, 0.3), 3)
+# ---------------------------------------------------------------------------
+# Improved NRR noise model
+# ---------------------------------------------------------------------------
+def simulate_nrr_change(winner_weight, loser_weight):
+    strength_diff = winner_weight - loser_weight
+    # Base reflects typical competitive T20 margin; scales with mismatch
+    base = np.clip(0.15 + 0.4 * strength_diff, 0.05, 0.50)
+    noise = np.random.normal(0, 0.12)
+    raw = base + noise
+    # Asymmetric clip: small negatives possible (narrow wins), cap blowouts at 0.8
+    return round(np.clip(raw, -0.05, 0.80), 3)
 
 def overs_to_float(overs_str):
-    """
-    Converts overs in 'xx.y' format to float.
-    Example: '205.1' -> 205.1667
-    """
     if isinstance(overs_str, (int, float)):
         return float(overs_str)
     try:
@@ -144,71 +226,89 @@ def calculate_nrr(team_data):
     of = overs_to_float(team_data["overs_faced"])
     ra = team_data["runs_against"]
     ob = overs_to_float(team_data["overs_bowled"])
-
     if of == 0 or ob == 0:
         return 0.0
-
     return round((rf / of) - (ra / ob), 3)
 
-
-
-
-
+# ---------------------------------------------------------------------------
+# Core simulation
+# ---------------------------------------------------------------------------
 def run_adjusted_simulation(num_simulations, what_if=False, override_matches=None):
     matches = override_matches if override_matches is not None else remaining_matches
 
-    max_rating = max(squad_strength.values())
-    squad_weights = {team: val / max_rating for team, val in squad_strength.items()}
-
-    strength_scores = {}
-    for team, data in updated_points_data.items():
-        win_pct = data["points"] / (data["matches"] * 2)
-        nrr_score = (calculate_nrr(data) + 2) / 4
-        strength_scores[team] = 0.7 * win_pct + 0.3 * nrr_score
-
-    total_form_strength = sum(strength_scores.values())
-    form_weights = {team: val / total_form_strength for team, val in strength_scores.items()}
-
-    hybrid_strength = {
-        team: 0.9 * form_weights[team] + 0.1 * squad_weights[team]
-        for team in teams
+    # --- Build hybrid strength weights ---
+    # Elo component
+    max_elo = max(elo_ratings.values())
+    min_elo = min(elo_ratings.values())
+    elo_norm = {
+        t: (elo_ratings[t] - min_elo) / (max_elo - min_elo + 1e-9)
+        for t in teams
     }
-    total_hybrid = sum(hybrid_strength.values())
-    hybrid_weights = {team: val / total_hybrid for team, val in hybrid_strength.items()}
 
+    # Recent form component
+    form_scores = {t: get_form_score(t) for t in teams}
 
+    # NRR component from current table
+    nrr_scores = {}
+    for team, data in updated_points_data.items():
+        nrr = calculate_nrr(data)
+        nrr_scores[team] = (nrr + 2) / 4  # normalise to ~0-1
 
-    # Apply What-if match results
-    # Create a copy of updated_points_data
+    # Win % component
+    win_pcts = {}
+    for team, data in updated_points_data.items():
+        m = data["matches"]
+        win_pcts[team] = (data["points"] / (m * 2)) if m > 0 else 0.5
+
+    # Blend: Elo carries most weight early, form grows as matches accumulate
+    matches_played = max(d["matches"] for d in updated_points_data.values())
+    form_weight  = min(0.30, 0.06 * matches_played)   # grows from 0 → 0.30
+    elo_weight   = max(0.45, 0.75 - 0.03 * matches_played)  # shrinks 0.75 → 0.45
+    winpct_weight = 0.15
+    nrr_weight   = 1.0 - elo_weight - form_weight - winpct_weight
+
+    raw_strength = {}
+    for t in teams:
+        raw_strength[t] = (
+            elo_weight   * elo_norm[t] +
+            form_weight  * form_scores[t] +
+            winpct_weight * win_pcts[t] +
+            nrr_weight   * nrr_scores[t]
+        )
+
+    total = sum(raw_strength.values())
+    hybrid_weights = {t: raw_strength[t] / total for t in teams}
+
+    # --- Apply What-if results to base data ---
     base_team_data = {
         team: {
-            "points": data["points"],
-            "matches": data["matches"],
-            "runs_for": data["runs_for"],
+            "points":      data["points"],
+            "matches":     data["matches"],
+            "runs_for":    data["runs_for"],
             "overs_faced": overs_to_float(data["overs_faced"]),
-            "runs_against": data["runs_against"],
-            "overs_bowled": overs_to_float(data["overs_bowled"]),
+            "runs_against":data["runs_against"],
+            "overs_bowled":overs_to_float(data["overs_bowled"]),
         }
         for team, data in updated_points_data.items()
     }
 
-    # Apply What-if match results
     for match in matches:
-        if match.get("applied") and match.get("result") in [match["home"], match["away"],
-                                                            "Abandoned/No Result (1 point each)"]:
-            home = match["home"]
-            away = match["away"]
+        if match.get("applied") and match.get("result") in [
+            match["home"], match["away"], "Abandoned/No Result (1 point each)"
+        ]:
+            home   = match["home"]
+            away   = match["away"]
             result = match["result"]
 
             if result == "Abandoned/No Result (1 point each)":
-                base_team_data[home]["points"] += 1
-                base_team_data[away]["points"] += 1
+                base_team_data[home]["points"]  += 1
+                base_team_data[away]["points"]  += 1
                 base_team_data[home]["matches"] += 1
                 base_team_data[away]["matches"] += 1
                 continue
 
             winner = result
-            loser = away if winner == home else home
+            loser  = away if winner == home else home
 
             try:
                 wr = match["runs"][winner]
@@ -219,53 +319,54 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
                 print(f"Invalid What-if format for match: {match}")
                 continue
 
-            base_team_data[winner]["points"] += 2
-            base_team_data[winner]["matches"] += 1
-            base_team_data[winner]["runs_for"] += wr
-            base_team_data[winner]["overs_faced"] = round(base_team_data[winner]["overs_faced"] + wo)
+            base_team_data[winner]["points"]      += 2
+            base_team_data[winner]["matches"]     += 1
+            base_team_data[winner]["runs_for"]    += wr
+            base_team_data[winner]["overs_faced"] += wo
             base_team_data[winner]["runs_against"] += lr
-            base_team_data[winner]["overs_bowled"] = round(base_team_data[winner]["overs_bowled"] + lo)
+            base_team_data[winner]["overs_bowled"] += lo
 
-            base_team_data[loser]["matches"] += 1
-            base_team_data[loser]["runs_for"] += lr
-            base_team_data[loser]["overs_faced"] = round(base_team_data[loser]["overs_faced"] + lo)
+            base_team_data[loser]["matches"]      += 1
+            base_team_data[loser]["runs_for"]     += lr
+            base_team_data[loser]["overs_faced"]  += lo
             base_team_data[loser]["runs_against"] += wr
-            base_team_data[loser]["overs_bowled"] = round(base_team_data[loser]["overs_bowled"] + wo, 3)
+            base_team_data[loser]["overs_bowled"] += wo
 
-    # Use the modified data to compute base points and NRR
     base_points = {team: base_team_data[team]["points"] for team in teams}
-    #for match in remaining_matches:
-     #   if match.get("applied") and match.get("result") in [match["home"], match["away"]]:
-      #      base_points[match["result"]] += 2  # add 2 points temporarily
+    base_nrr    = {team: calculate_nrr(base_team_data[team]) for team in teams}
 
-    base_nrr = {team: calculate_nrr(base_team_data[team]) for team in teams}
-
-    top4_counts = {team: 0 for team in teams}
-    top2_counts = {team: 0 for team in teams}
-    top4_confirmed_points_only = {team: 0 for team in teams}
-    top2_confirmed_points_only = {team: 0 for team in teams}
-    cumulative_points = {team: 0 for team in teams}
-    cumulative_nrr = {team: 0.0 for team in teams}
+    top4_counts                  = {team: 0 for team in teams}
+    top2_counts                  = {team: 0 for team in teams}
+    top4_confirmed_points_only   = {team: 0 for team in teams}
+    top2_confirmed_points_only   = {team: 0 for team in teams}
+    cumulative_points            = {team: 0 for team in teams}
+    cumulative_nrr               = {team: 0.0 for team in teams}
 
     for _ in range(num_simulations):
         points = base_points.copy()
-        nrrs = base_nrr.copy()
+        nrrs   = base_nrr.copy()
 
         for match in matches:
             if match.get("applied"):
-                continue  # Skip already applied What-if results
-            home = match["home"]
-            away = match["away"]
-            s_home = hybrid_weights[home] #* 1.05
-            s_away = hybrid_weights[away] #* 0.95
+                continue
+            home   = match["home"]
+            away   = match["away"]
+            venue  = match.get("venue", "")
+
+            # Home advantage applied here
+            boost  = get_home_boost(venue)
+            s_home = hybrid_weights[home] * boost
+            s_away = hybrid_weights[away]
+
             prob_home_win = s_home / (s_home + s_away)
             winner, loser = (home, away) if np.random.rand() < prob_home_win else (away, home)
+
             points[winner] += 2
             margin = simulate_nrr_change(hybrid_weights[winner], hybrid_weights[loser])
             nrrs[winner] += margin
-            nrrs[loser] -= margin
+            nrrs[loser]  -= margin
 
-        # Sort by points only for "confirmed %" columns
+        # Points-only sort for confirmed columns
         sorted_points_only = sorted(points.items(), key=lambda x: x[1], reverse=True)
         fifth_points = sorted_points_only[4][1]
         third_points = sorted_points_only[2][1]
@@ -284,24 +385,18 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
 
         for team in teams:
             cumulative_points[team] += points[team]
-            cumulative_nrr[team] += nrrs[team]
+            cumulative_nrr[team]    += nrrs[team]
 
-    qualifications = {team: round((top4_counts[team] / num_simulations) * 100, 2) for team in teams}
-    top2_qualifications = {team: round((top2_counts[team] / num_simulations) * 100, 2) for team in teams}
-    top4_confirmed_points_only_pct = {team: round((top4_confirmed_points_only[team] / num_simulations) * 100, 2) for team in teams}
-    top2_confirmed_points_only_pct = {team: round((top2_confirmed_points_only[team] / num_simulations) * 100, 2) for team in teams}
+    qualifications           = {team: round((top4_counts[team] / num_simulations) * 100, 2) for team in teams}
+    top2_qualifications      = {team: round((top2_counts[team] / num_simulations) * 100, 2) for team in teams}
+    top4_conf_pct            = {team: round((top4_confirmed_points_only[team] / num_simulations) * 100, 2) for team in teams}
+    top2_conf_pct            = {team: round((top2_confirmed_points_only[team] / num_simulations) * 100, 2) for team in teams}
 
     sorted_by_qual = sorted(teams, key=lambda t: qualifications[t], reverse=True)
 
     results = pd.DataFrame([
-        (
-            team,
-            qualifications[team],
-            top2_qualifications[team],
-            top4_confirmed_points_only_pct[team],
-            top2_confirmed_points_only_pct[team],
-            None,
-        )
+        (team, qualifications[team], top2_qualifications[team],
+         top4_conf_pct[team], top2_conf_pct[team], None)
         for team in sorted_by_qual
     ], columns=[
         "Team", "Top 4 (%)", "Top 2 (%)",
@@ -311,101 +406,89 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
 
     return results
 
+# ---------------------------------------------------------------------------
+# Points table helpers
+# ---------------------------------------------------------------------------
 def get_current_points_table():
     table = []
     for team in teams:
         data = updated_points_data[team]
-        runs_for = data["runs_for"]
-        overs_faced = overs_to_float(data["overs_faced"])
-        runs_against = data["runs_against"]
-        overs_bowled = overs_to_float(data["overs_bowled"])
-
-        if overs_faced == 0 or overs_bowled == 0:
-            nrr = 0.0
-        else:
-            nrr = round((runs_for / overs_faced) - (runs_against / overs_bowled), 3)
-
+        of = overs_to_float(data["overs_faced"])
+        ob = overs_to_float(data["overs_bowled"])
+        nrr = round((data["runs_for"] / of) - (data["runs_against"] / ob), 3) if of > 0 and ob > 0 else 0.0
         table.append({
-            "Team": team,
-            "Points": data["points"],
+            "Team":    team,
+            "Points":  data["points"],
             "Matches": data["matches"],
-            "NRR": nrr
+            "NRR":     nrr
         })
-
     return pd.DataFrame(sorted(table, key=lambda x: (x["Points"], x["NRR"]), reverse=True))
 
 
 def get_points_table_after_what_if(what_if_matches):
-
     team_data = {
         team: {
-            "points": updated_points_data[team]["points"],
-            "matches": updated_points_data[team]["matches"],
-            "runs_for": updated_points_data[team]["runs_for"],
+            "points":      updated_points_data[team]["points"],
+            "matches":     updated_points_data[team]["matches"],
+            "runs_for":    updated_points_data[team]["runs_for"],
             "overs_faced": overs_to_float(updated_points_data[team]["overs_faced"]),
-            "runs_against": updated_points_data[team]["runs_against"],
-            "overs_bowled": overs_to_float(updated_points_data[team]["overs_bowled"]),
+            "runs_against":updated_points_data[team]["runs_against"],
+            "overs_bowled":overs_to_float(updated_points_data[team]["overs_bowled"]),
         }
         for team in teams
     }
 
     for match in what_if_matches:
-        if match.get("applied") and match.get("result") in [match["home"], match["away"],
-                                                            "Abandoned/No Result (1 point each)"]:
-            home = match["home"]
-            away = match["away"]
+        if match.get("applied") and match.get("result") in [
+            match["home"], match["away"], "Abandoned/No Result (1 point each)"
+        ]:
+            home   = match["home"]
+            away   = match["away"]
             result = match["result"]
 
             if result == "Abandoned/No Result (1 point each)":
-                team_data[home]["points"] += 1
-                team_data[away]["points"] += 1
+                team_data[home]["points"]  += 1
+                team_data[away]["points"]  += 1
                 team_data[home]["matches"] += 1
                 team_data[away]["matches"] += 1
                 continue
 
             winner = result
-            loser = away if winner == home else home
+            loser  = away if winner == home else home
 
             wr = match["runs"].get(winner)
             lr = match["runs"].get(loser)
             wo = overs_to_float(match["overs"].get(winner))
             lo = overs_to_float(match["overs"].get(loser))
 
-            if wr is None or lr is None or wo is None or lo is None:
+            if None in (wr, lr, wo, lo):
                 continue
 
-            team_data[winner]["points"] += 2
-            team_data[winner]["matches"] += 1
-            team_data[winner]["runs_for"] += wr
-            team_data[winner]["overs_faced"] += wo
+            team_data[winner]["points"]       += 2
+            team_data[winner]["matches"]      += 1
+            team_data[winner]["runs_for"]     += wr
+            team_data[winner]["overs_faced"]  += wo
             team_data[winner]["runs_against"] += lr
             team_data[winner]["overs_bowled"] += lo
 
-            team_data[loser]["matches"] += 1
-            team_data[loser]["runs_for"] += lr
-            team_data[loser]["overs_faced"] += lo
-            team_data[loser]["runs_against"] += wr
-            team_data[loser]["overs_bowled"] += wo
+            team_data[loser]["matches"]       += 1
+            team_data[loser]["runs_for"]      += lr
+            team_data[loser]["overs_faced"]   += lo
+            team_data[loser]["runs_against"]  += wr
+            team_data[loser]["overs_bowled"]  += wo
 
-    # Compute NRR and build output table
     table = []
     for team, data in team_data.items():
-        of = data["overs_faced"]
-        ob = data["overs_bowled"]
-        nrr = round((data["runs_for"] / of - data["runs_against"] / ob), 3) if of > 0 and ob > 0 else 0.0
-        table.append({
-            "Team": team,
-            "Points": data["points"],
-            "Matches": data["matches"],
-            "NRR": nrr
-        })
+        of  = data["overs_faced"]
+        ob  = data["overs_bowled"]
+        nrr = round(data["runs_for"] / of - data["runs_against"] / ob, 3) if of > 0 and ob > 0 else 0.0
+        table.append({"Team": team, "Points": data["points"], "Matches": data["matches"], "NRR": nrr})
 
     return pd.DataFrame(sorted(table, key=lambda x: (x["Points"], x["NRR"]), reverse=True))
 
-
-
-
-# --- Pure Math Simulation (Parallel) ---
+# ---------------------------------------------------------------------------
+# Pure Math simulation (parallel)
+# ---------------------------------------------------------------------------
 def run_pure_math_worker(args):
     seed, sims, matches = args
     np.random.seed(seed)
@@ -416,29 +499,23 @@ def run_pure_math_worker(args):
         if match.get("applied") and match.get("result"):
             result = match["result"]
             if result == "Abandoned/No Result (1 point each)":
-                home = match["home"]
-                away = match["away"]
-                base_points[home] += 1
-                base_points[away] += 1
-            else:
+                base_points[match["home"]] += 1
+                base_points[match["away"]] += 1
+            elif result in base_points:
                 base_points[result] += 2
 
     for _ in range(sims):
         points = base_points.copy()
-
         for match in matches:
             if match.get("applied") and match.get("result"):
-                continue  # Skip What-if result
-            home = match["home"]
-            away = match["away"]
-            winner = np.random.choice([home, away])
+                continue
+            winner = np.random.choice([match["home"], match["away"]])
             points[winner] += 2
 
-        sorted_teams = sorted(points.items(), key=lambda x: x[1], reverse=True)
-        fourth_place_points = sorted_teams[3][1]
-
-        above = [t for t, p in sorted_teams if p > fourth_place_points]
-        tied = [t for t, p in sorted_teams if p == fourth_place_points]
+        sorted_teams       = sorted(points.items(), key=lambda x: x[1], reverse=True)
+        fourth_place_pts   = sorted_teams[3][1]
+        above = [t for t, p in sorted_teams if p > fourth_place_pts]
+        tied  = [t for t, p in sorted_teams if p == fourth_place_pts]
         spots = 4 - len(above)
 
         for t in above:
@@ -450,69 +527,59 @@ def run_pure_math_worker(args):
     return top4_counts
 
 
-
-
-
 def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_matches=None):
-
     sims_per_core = total_sims // processes
-    seeds = np.random.randint(0, 1e9, size=processes)
+    seeds   = np.random.randint(0, 1_000_000_000, size=processes)
     matches = override_matches if override_matches is not None else remaining_matches
 
     with ThreadPoolExecutor(max_workers=processes) as executor:
-        results = list(executor.map(run_pure_math_worker, [(seed, sims_per_core, copy.deepcopy(matches)) for seed in seeds]))
+        results = list(executor.map(
+            run_pure_math_worker,
+            [(seed, sims_per_core, copy.deepcopy(matches)) for seed in seeds]
+        ))
 
     combined = {team: 0 for team in teams}
-
-    all_applied = all(m.get("applied") and m.get("result") for m in matches)
-    if all_applied:
-        # Only one scenario: current points table = final table
-        sorted_points = sorted(
-            {team: updated_points_data[team]["points"] + sum(2 for m in matches if m["result"] == team) for team in
-             teams}.items(),
-            key=lambda x: x[1],
-            reverse=True
-        )
-        top4_teams = [team for team, _ in sorted_points[:4]]
-        return {team: 100.0 if team in top4_teams else 0.0 for team in teams}
-
     for partial in results:
         for team in teams:
             combined[team] += partial[team]
 
     return {team: round((combined[team] / total_sims) * 100, 2) for team in teams}
 
-
-# Parallel helpers
-def parallel_worker(seed_and_sims_matches):
-    seed, sims, what_if, matches = seed_and_sims_matches
+# ---------------------------------------------------------------------------
+# Parallel main simulation
+# ---------------------------------------------------------------------------
+def parallel_worker(args):
+    seed, sims, what_if, matches = args
     np.random.seed(seed)
     return run_adjusted_simulation(sims, what_if=what_if, override_matches=matches)
 
 
-
-
-
 def run_parallel_simulations(total_sims=10000, processes=4, override_matches=None):
-    sims_per_core = total_sims // processes
-    seeds = np.random.randint(0, 1e9, size=processes)
+    sims_per_core  = total_sims // processes
+    seeds          = np.random.randint(0, 1_000_000_000, size=processes)
     matches_to_use = override_matches if override_matches is not None else remaining_matches
 
     with ThreadPoolExecutor(max_workers=processes) as executor:
-        results = list(executor.map(parallel_worker, [(seed, sims_per_core, True, copy.deepcopy(matches_to_use)) for seed in seeds]))
+        results = list(executor.map(
+            parallel_worker,
+            [(seed, sims_per_core, True, copy.deepcopy(matches_to_use)) for seed in seeds]
+        ))
 
     final_df = pd.concat(results)
-    grouped = final_df.groupby("Team").agg({
-        "Top 4 (%)": "mean",
-        "Top 2 (%)": "mean",
+    grouped  = final_df.groupby("Team").agg({
+        "Top 4 (%)":           "mean",
+        "Top 2 (%)":           "mean",
         "Top 4 Confirmed (%)": "mean",
-        "Top 2 Confirmed (%)": "mean"
+        "Top 2 Confirmed (%)": "mean",
     }).reset_index()
-    grouped = grouped.sort_values(by=["Top 4 (%)", "Top 2 (%)"], ascending=[False, False]).reset_index(drop=True)
+    grouped = grouped.sort_values(
+        by=["Top 4 (%)", "Top 2 (%)"], ascending=[False, False]
+    ).reset_index(drop=True)
     return grouped
 
-
-
+# ---------------------------------------------------------------------------
+# Styling
+# ---------------------------------------------------------------------------
 def fancy_highlight_half_split(df):
     percentage_columns = [
         "Top 2 (%)", "Top 4 (%)", "Top 2 Confirmed (%)",
@@ -526,57 +593,43 @@ def fancy_highlight_half_split(df):
             val = float(val)
         except:
             return ""
-
-        # 100% (Golden Yellow)
         if val == 100.00:
             return "background-color: #301934; color: white; font-weight: bold"
-
-        # 0% (Dark Grey)
         if val == 0.00:
             return "background-color: #36454F; color: white"
         if 0.01 <= val <= 0.99:
             return "background-color: #580000; color: white"
-        # 1.00 - 44.99% (Red shades in 5% steps, avoid pinks)
         if 1.00 <= val <= 44.99:
-            step = int(val // 5)  # 0 to 8
+            step = int(val // 5)
             red_values = [
-                "#880000", "#A02020", "#B03030", "#C04040", "#D05030",
-                "#E06030", "#EF7020", "#F88020", "#FF9020"  # Warmer oranges as it lightens
+                "#880000","#A02020","#B03030","#C04040","#D05030",
+                "#E06030","#EF7020","#F88020","#FF9020"
             ]
             color = red_values[min(step, len(red_values) - 1)]
             return f"background-color: {color}; color: white"
-
-        # 45.00 - 50.00% (Yellow)
         if 45.00 <= val <= 50.00:
             return "background-color: #FFFF66; color: black"
-
-        # 50.01 - 99.99% (Green shades)
         if 50.01 <= val <= 99.99:
-            green_intensity = int(245 - ((val - 50.01) / 49.98) * 150)  # From 245 to 95
-            red_blue = int(168 - ((val - 50.01) / 49.98) * 168)  # From 168 to 0
-            r, g, b = red_blue, green_intensity, red_blue
-            hex_color = '#{0:02X}{1:02X}{2:02X}'.format(r, g, b)
+            green_intensity = int(245 - ((val - 50.01) / 49.98) * 150)
+            red_blue = int(168 - ((val - 50.01) / 49.98) * 168)
+            hex_color = '#{0:02X}{1:02X}{2:02X}'.format(red_blue, green_intensity, red_blue)
             return f"background-color: {hex_color}; color: black"
-
         return ""
 
     styled = df.style.format({
-        "Top 2 (%)": "{:.2f}", "Top 4 (%)": "{:.2f}",
-        "Top 2 Confirmed (%)": "{:.2f}", "Top 4 Confirmed (%)": "{:.2f}",
-        "Top 4 Pure Math (%)": "{:.2f}"
+        "Top 2 (%)":           "{:.2f}",
+        "Top 4 (%)":           "{:.2f}",
+        "Top 2 Confirmed (%)": "{:.2f}",
+        "Top 4 Confirmed (%)": "{:.2f}",
+        "Top 4 Pure Math (%)": "{:.2f}",
     })
 
-    # Apply custom color logic to each percentage column
     for col in percentage_columns:
         styled = styled.map(color_by_percentage, subset=col)
 
-    # Bold top 4 rows
     styled = styled.set_properties(subset=pd.IndexSlice[:4, :], **{"font-weight": "bold"})
-
-    # Center alignment
     styled = styled.set_properties(**{"text-align": "center", "vertical-align": "middle"})
 
-    # Color team cells using your team_colors dict
     def color_team_cells(val):
         if val in team_colors:
             c = team_colors[val]
@@ -584,57 +637,41 @@ def fancy_highlight_half_split(df):
         return ""
 
     styled = styled.map(color_team_cells, subset=["Team"])
-
     return styled
 
-
-
-# Run the simulation
-
-
+# ---------------------------------------------------------------------------
+# CLI entry point
+# ---------------------------------------------------------------------------
 def run_full_simulation_and_prompt():
-    df = run_parallel_simulations(10000, processes=16)
-    pure_math = run_pure_math_simulation_parallel(10000, processes=16)
-
-    # Insert "Top 4 Pure Math (%)" just before "Avg Final Points"
-
+    df         = run_parallel_simulations(10000, processes=16)
+    pure_math  = run_pure_math_simulation_parallel(10000, processes=16)
     df["Top 4 Pure Math (%)"] = df["Team"].map(pure_math)
-
-
-    styled_df = fancy_highlight_half_split(df)
+    styled_df  = fancy_highlight_half_split(df)
     print(df)
 
-    default_match_number = 70 - len(remaining_matches)
-    suggested_match_id = f"m{default_match_number}"
-    user_input = input(f"Enter match ID (press Enter to use suggested '{suggested_match_id}', or type 'skip' to skip saving): ").strip().lower()
+    default_match_number = TOTAL_MATCHES - len(remaining_matches)
+    suggested_match_id   = f"m{default_match_number}"
+    user_input = input(
+        f"Enter match ID (press Enter for '{suggested_match_id}', or 'skip'): "
+    ).strip().lower()
 
-    if user_input == "":
-        match_id = suggested_match_id
-    elif user_input == "skip":
-        match_id = None
-    else:
-        match_id = user_input
+    match_id = suggested_match_id if user_input == "" else (None if user_input == "skip" else user_input)
 
     if match_id:
-        format_input = input("Save format? Type 'csv', 'excel', or 'both': ").strip().lower()
-
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        output_dir = "results"
+        format_input = input("Save format? 'csv', 'excel', or 'both': ").strip().lower()
+        timestamp    = datetime.now().strftime("%Y%m%d_%H%M")
+        output_dir   = "results"
         os.makedirs(output_dir, exist_ok=True)
 
-        csv_path = f"{output_dir}/post_{match_id}_results_{timestamp}.csv"
+        csv_path  = f"{output_dir}/post_{match_id}_results_{timestamp}.csv"
         xlsx_path = f"{output_dir}/post_{match_id}_stylized_{timestamp}.xlsx"
 
-        if format_input in ["csv", "both"]:
-            df.to_csv(csv_path, index=False)
-        if format_input in ["excel", "both"]:
-            styled_df.to_excel(xlsx_path, index=False)
+        if format_input in ["csv",   "both"]: df.to_csv(csv_path, index=False)
+        if format_input in ["excel", "both"]: styled_df.to_excel(xlsx_path, index=False)
 
         print("\n✅ Saved:")
-        if format_input in ["csv", "both"]:
-            print(f"  [CSV]   {csv_path}")
-        if format_input in ["excel", "both"]:
-            print(f"  [Excel] {xlsx_path}")
+        if format_input in ["csv",   "both"]: print(f"  [CSV]   {csv_path}")
+        if format_input in ["excel", "both"]: print(f"  [Excel] {xlsx_path}")
     else:
         print("\n⚠️ Skipped file saving.")
 

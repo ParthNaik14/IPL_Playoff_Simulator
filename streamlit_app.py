@@ -6,7 +6,7 @@ import ipl_simulator as sim  # your simulator logic file
 
 # --- Page setup ---
 st.set_page_config(page_title="IPL Playoff Simulator", layout="wide")
-st.title("📊 IPL 2025 Playoff Qualification Simulator")
+st.title("📊 IPL 2026 Playoff Qualification Simulator")
 
 query_params = st.query_params
 if "reset" in query_params:
