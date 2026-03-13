@@ -188,7 +188,8 @@ remaining_matches = [
     {"home": "Mumbai Indians",              "away": "Royal Challengers Bengaluru", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
 ]
 
-TOTAL_MATCHES = 70  # full league stage
+TOTAL_MATCHES = 80       # IPL 2026 expanded league stage
+MATCHES_COMMITTED = 0   # increment this manually as you comment out real results
 
 def set_what_if_results(new_remaining_matches):
     global remaining_matches
@@ -649,7 +650,7 @@ def run_full_simulation_and_prompt():
     styled_df  = fancy_highlight_half_split(df)
     print(df)
 
-    default_match_number = TOTAL_MATCHES - len(remaining_matches)
+    default_match_number = MATCHES_COMMITTED
     suggested_match_id   = f"m{default_match_number}"
     user_input = input(
         f"Enter match ID (press Enter for '{suggested_match_id}', or 'skip'): "
