@@ -16,3 +16,6 @@ __pycache__/
 
 # Virtual environment
 venv/
+
+#streamlit admin controls
+.streamlit/secrets.toml

@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated post m67">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
+    <list default="true" id="24c4d508-e427-4616-95f8-2396ed63a88d" name="Changes" comment="updated for IPL 2026">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Gitignore.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Gitignore.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ipl_simulator.py" beforeDir="false" afterPath="$PROJECT_DIR$/ipl_simulator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/streamlit_app.py" beforeDir="false" afterPath="$PROJECT_DIR$/streamlit_app.py" afterDir="false" />
     </list>
@@ -451,7 +451,23 @@
       <option name="project" value="LOCAL" />
       <updated>1748180158209</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="updated for IPL 2026">
+      <option name="closed" value="true" />
+      <created>1773421766515</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1773421766515</updated>
+    </task>
+    <task id="LOCAL-00033" summary="updated for IPL 2026">
+      <option name="closed" value="true" />
+      <created>1773422678737</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1773422678737</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -469,6 +485,7 @@
     <MESSAGE value="updated post m65" />
     <MESSAGE value="updated post m66" />
     <MESSAGE value="updated post m67" />
-    <option name="LAST_COMMIT_MESSAGE" value="updated post m67" />
+    <MESSAGE value="updated for IPL 2026" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated for IPL 2026" />
   </component>
 </project>
