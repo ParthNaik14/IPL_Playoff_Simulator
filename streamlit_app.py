@@ -375,7 +375,7 @@ The simulator runs **10,000 Monte Carlo simulations** of the remaining matches. 
 | **Safe Top 2 %** | Same as Safe by Points %, but for a top 2 finish on points alone. | Same win probability model as Top 2 % · Final ranking by points only |
 | **Still Possible %** | Mathematical ceiling for top 4. If every remaining game is a **pure 50/50 coin flip** regardless of team strength, how often does this team finish top 4? When this hits 0%, top 4 is mathematically impossible. | Equal 50/50 win probability · Points only (no NRR) |
 | **Top 2 Still Possible %** | Same as Still Possible %, but for a top 2 finish. When this hits 0%, a direct final berth is mathematically impossible. | Equal 50/50 win probability · Points only (no NRR) |
-| **Avg Final Points** | Average points this team finishes on across all simulations, rounded to nearest even number. **Most meaningful mid-season** once several matches have been played — early in the season this only reflects points from the currently loaded schedule. | Same as Qualify % |
+| **Avg Final Points** | Average points this team finishes on across all simulations, rounded to nearest even number. **Most meaningful mid-season** once several matches have been played. | Same as Qualify % |
 | **Avg Final NRR** | Average NRR this team finishes on across all simulations (3 decimal places). Most useful when multiple teams are projected on the same points — NRR decides who qualifies. Green = positive, red = negative. | Same as Qualify % |
 
 > **Win probability model:** Each match probability = `team_strength / (team_strength + opponent_strength)`, where strength is a weighted blend of Elo (45–55%), recent form (0–30%), win % (15%), and NRR (remaining %). Home advantage adds a venue-specific multiplier (1.03–1.08×).
