@@ -31,31 +31,31 @@ teams = [
 # ---------------------------------------------------------------------------
 updated_points_data = {
     "Royal Challengers Bengaluru": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Punjab Kings":                {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Mumbai Indians":              {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Gujarat Titans":              {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Delhi Capitals":              {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Kolkata Knight Riders":       {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Lucknow Super Giants":        {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Sunrisers Hyderabad":         {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Rajasthan Royals":            {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Chennai Super Kings":         {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Punjab Kings": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Mumbai Indians": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Gujarat Titans": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Delhi Capitals": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Kolkata Knight Riders": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Lucknow Super Giants": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Sunrisers Hyderabad": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Rajasthan Royals": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Chennai Super Kings": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
 }
 
 # ---------------------------------------------------------------------------
 # Elo ratings — auto-updated by commit_result (margin-aware)
 # ---------------------------------------------------------------------------
 elo_ratings = {
-    "Royal Challengers Bengaluru":  1530,
-    "Gujarat Titans":               1510,
-    "Mumbai Indians":               1505,
-    "Punjab Kings":                 1495,
-    "Kolkata Knight Riders":        1490,
-    "Delhi Capitals":               1480,
-    "Lucknow Super Giants":         1470,
-    "Sunrisers Hyderabad":          1465,
-    "Rajasthan Royals":             1455,
-    "Chennai Super Kings":          1450,
+    "Royal Challengers Bengaluru":           1530,
+    "Gujarat Titans":                        1510,
+    "Mumbai Indians":                        1505,
+    "Punjab Kings":                          1495,
+    "Kolkata Knight Riders":                 1490,
+    "Delhi Capitals":                        1480,
+    "Lucknow Super Giants":                  1470,
+    "Sunrisers Hyderabad":                   1465,
+    "Rajasthan Royals":                      1455,
+    "Chennai Super Kings":                   1450,
 }
 
 ELO_K = 32
@@ -64,16 +64,16 @@ ELO_K = 32
 # Recent form — last 5 results, auto-updated by commit_result
 # ---------------------------------------------------------------------------
 recent_form = {
-    "Royal Challengers Bengaluru":  [],
-    "Gujarat Titans":               [],
-    "Mumbai Indians":               [],
-    "Punjab Kings":                 [],
-    "Kolkata Knight Riders":        [],
-    "Delhi Capitals":               [],
-    "Lucknow Super Giants":         [],
-    "Sunrisers Hyderabad":          [],
-    "Rajasthan Royals":             [],
-    "Chennai Super Kings":          [],
+    "Royal Challengers Bengaluru":           [],
+    "Gujarat Titans":                        [],
+    "Mumbai Indians":                        [],
+    "Punjab Kings":                          [],
+    "Kolkata Knight Riders":                 [],
+    "Delhi Capitals":                        [],
+    "Lucknow Super Giants":                  [],
+    "Sunrisers Hyderabad":                   [],
+    "Rajasthan Royals":                      [],
+    "Chennai Super Kings":                   [],
 }
 
 FORM_WEIGHTS = [0.10, 0.15, 0.20, 0.25, 0.30]  # oldest to newest
@@ -112,26 +112,26 @@ def get_home_boost(venue):
 # Completed matches are removed from this list automatically by commit_result()
 # ---------------------------------------------------------------------------
 remaining_matches = [
-    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad",        "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians",              "away": "Kolkata Knight Riders",       "venue": "Mumbai",     "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals",            "away": "Chennai Super Kings",         "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
-    {"home": "Punjab Kings",                "away": "Gujarat Titans",              "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants",        "away": "Delhi Capitals",              "venue": "Lucknow",    "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders",       "away": "Sunrisers Hyderabad",         "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
-    {"home": "Chennai Super Kings",         "away": "Punjab Kings",                "venue": "Chennai",    "result": None, "margin": None, "applied": False},
-    {"home": "Delhi Capitals",              "away": "Mumbai Indians",              "venue": "Delhi",      "result": None, "margin": None, "applied": False},
-    {"home": "Gujarat Titans",              "away": "Rajasthan Royals",            "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},
-    {"home": "Sunrisers Hyderabad",         "away": "Lucknow Super Giants",        "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},
-    {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings",         "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders",       "away": "Punjab Kings",                "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals",            "away": "Mumbai Indians",              "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
-    {"home": "Delhi Capitals",              "away": "Gujarat Titans",              "venue": "Delhi",      "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders",       "away": "Lucknow Super Giants",        "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals",            "away": "Royal Challengers Bengaluru", "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
-    {"home": "Punjab Kings",                "away": "Sunrisers Hyderabad",         "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},
-    {"home": "Chennai Super Kings",         "away": "Delhi Capitals",              "venue": "Chennai",    "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants",        "away": "Gujarat Titans",              "venue": "Lucknow",    "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians",              "away": "Royal Challengers Bengaluru", "venue": "Mumbai",     "result": None, "margin": None, "applied": False},
+    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
+    {"home": "Mumbai Indians", "away": "Kolkata Knight Riders", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals", "away": "Chennai Super Kings", "venue": "Guwahati", "result": None, "margin": None, "applied": False},
+    {"home": "Punjab Kings", "away": "Gujarat Titans", "venue": "Mullanpur", "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants", "away": "Delhi Capitals", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
+    {"home": "Kolkata Knight Riders", "away": "Sunrisers Hyderabad", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
+    {"home": "Chennai Super Kings", "away": "Punjab Kings", "venue": "Chennai", "result": None, "margin": None, "applied": False},
+    {"home": "Delhi Capitals", "away": "Mumbai Indians", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    {"home": "Gujarat Titans", "away": "Rajasthan Royals", "venue": "Ahmedabad", "result": None, "margin": None, "applied": False},
+    {"home": "Sunrisers Hyderabad", "away": "Lucknow Super Giants", "venue": "Hyderabad", "result": None, "margin": None, "applied": False},
+    {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings", "venue": "Bengaluru", "result": None, "margin": None, "applied": False},
+    {"home": "Kolkata Knight Riders", "away": "Punjab Kings", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals", "away": "Mumbai Indians", "venue": "Guwahati", "result": None, "margin": None, "applied": False},
+    {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "result": None, "margin": None, "applied": False},
+    {"home": "Kolkata Knight Riders", "away": "Lucknow Super Giants", "venue": "Kolkata", "result": None, "margin": None, "applied": False},
+    {"home": "Rajasthan Royals", "away": "Royal Challengers Bengaluru", "venue": "Guwahati", "result": None, "margin": None, "applied": False},
+    {"home": "Punjab Kings", "away": "Sunrisers Hyderabad", "venue": "Mullanpur", "result": None, "margin": None, "applied": False},
+    {"home": "Chennai Super Kings", "away": "Delhi Capitals", "venue": "Chennai", "result": None, "margin": None, "applied": False},
+    {"home": "Lucknow Super Giants", "away": "Gujarat Titans", "venue": "Lucknow", "result": None, "margin": None, "applied": False},
+    {"home": "Mumbai Indians", "away": "Royal Challengers Bengaluru", "venue": "Mumbai", "result": None, "margin": None, "applied": False},
 ]
 
 TOTAL_MATCHES     = 80  # IPL 2026 expanded league stage
@@ -141,7 +141,7 @@ MATCHES_COMMITTED = 0   # auto-incremented by commit_result()
 # Committed results log — auto-managed, do not edit manually
 # Each entry stores everything needed to fully reverse a commit
 # ---------------------------------------------------------------------------
-committed_results = []
+committed_results = []  # END_COMMITTED_RESULTS
 
 # ---------------------------------------------------------------------------
 # NRR / overs helpers
@@ -258,10 +258,11 @@ def _rewrite_source(new_points_data, new_elo, new_form, new_remaining, new_commi
     )
 
     # --- committed_results ---
-    cr_lines = json.dumps(new_committed_results, indent=4)
+    cr_json = json.dumps(new_committed_results, separators=(', ', ': '))
+    cr_py   = cr_json.replace(': true', ': True').replace(': false', ': False').replace(': null', ': None')
     source = re.sub(
-        r'(committed_results\s*=\s*)\[.*?\]',
-        lambda m: m.group(1) + cr_lines,
+        r'(committed_results\s*=\s*).*?(  # END_COMMITTED_RESULTS)',
+        lambda m: m.group(1) + cr_py + '  # END_COMMITTED_RESULTS',
         source, flags=re.DOTALL
     )
 
