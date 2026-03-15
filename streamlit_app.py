@@ -438,11 +438,21 @@ if st.session_state.simulation_df is not None:
 
     # Elo ratings table
     with st.expander("📊 Current Team Elo Ratings", expanded=False):
-        st.caption(
-            "Elo ratings represent each team's estimated strength. They are seeded from "
-            "squad quality (90%) and 2025 season finish (10%) before the tournament, then "
-            "updated automatically after each committed match result based on the margin of victory."
-        )
+        st.markdown("""
+**How Elo ratings are calculated:**
+
+Pre-season ratings are seeded from two components blended together:
+- **90% squad quality** — each team's expected XI is rated across four dimensions (batting impact, bowling impact, experience, T20 reputation) on a 0–10 scale. The top 11 players are aggregated with diminishing returns (12th man contributes less than the 1st), then normalised across all teams.
+- **10% last season finish** — 2025 final league standings converted to a 0–1 score (1st = 1.0, 10th = 0.0), giving a small but meaningful nudge to teams that performed well recently.
+
+The combined score is then normalised to a **1485–1515 range** — a deliberately narrow spread reflecting pre-season uncertainty. A 30-point gap between strongest and weakest translates to roughly a 54–46 win probability per match.
+
+**After each match**, Elo updates via a margin-aware formula:
+
+`new_rating = old_rating + K × (actual_score − expected_score)`
+
+Where K = 32, expected score is derived from the pre-match Elo gap, and actual score is a smooth function of NRR margin (a big win moves ratings more than a narrow one). This means ratings self-calibrate over the season — form matters more as matches accumulate.
+        """)
         elo_df = sim.get_elo_table()
         elo_df.index = range(1, len(elo_df) + 1)
         st.markdown(style_elo_table(elo_df).to_html(escape=False), unsafe_allow_html=True)
@@ -481,11 +491,21 @@ else:
 
     # Show Elo ratings pre-simulation too — useful context before season starts
     with st.expander("📊 Pre-season Team Elo Ratings", expanded=False):
-        st.caption(
-            "Elo ratings represent each team's estimated strength, seeded from "
-            "squad quality (90%) and 2025 season finish (10%). They update after "
-            "each match based on result and margin of victory."
-        )
+        st.markdown("""
+**How Elo ratings are calculated:**
+
+Pre-season ratings are seeded from two components blended together:
+- **90% squad quality** — each team's expected XI is rated across four dimensions (batting impact, bowling impact, experience, T20 reputation) on a 0–10 scale. The top 11 players are aggregated with diminishing returns (12th man contributes less than the 1st), then normalised across all teams.
+- **10% last season finish** — 2025 final league standings converted to a 0–1 score (1st = 1.0, 10th = 0.0), giving a small but meaningful nudge to teams that performed well recently.
+
+The combined score is then normalised to a **1485–1515 range** — a deliberately narrow spread reflecting pre-season uncertainty. A 30-point gap between strongest and weakest translates to roughly a 54–46 win probability per match.
+
+**After each match**, Elo updates via a margin-aware formula:
+
+`new_rating = old_rating + K × (actual_score − expected_score)`
+
+Where K = 32, expected score is derived from the pre-match Elo gap, and actual score is a smooth function of NRR margin (a big win moves ratings more than a narrow one). This means ratings self-calibrate over the season — form matters more as matches accumulate.
+        """)
         elo_df = sim.get_elo_table()
         elo_df.index = range(1, len(elo_df) + 1)
         st.markdown(style_elo_table(elo_df).to_html(escape=False), unsafe_allow_html=True)
