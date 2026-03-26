@@ -100,8 +100,9 @@ home_advantage = {
     "DELHI":      1.03,
     "LUCKNOW":    1.03,
     "MULLANPUR":  1.03,
+    "DHARAMSALA": 1.04,
+    "RAIPUR":     1.03,
     "GUWAHATI":   1.02,
-    "DHARAMSALA": 1.03,
 }
 
 def get_home_boost(venue):
@@ -112,30 +113,83 @@ def get_home_boost(venue):
 # Completed matches are removed from this list automatically by commit_result()
 # ---------------------------------------------------------------------------
 remaining_matches = [
-    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad",        "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians",              "away": "Kolkata Knight Riders",       "venue": "Mumbai",     "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals",            "away": "Chennai Super Kings",         "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
-    {"home": "Punjab Kings",                "away": "Gujarat Titans",              "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants",        "away": "Delhi Capitals",              "venue": "Lucknow",    "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders",       "away": "Sunrisers Hyderabad",         "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
-    {"home": "Chennai Super Kings",         "away": "Punjab Kings",                "venue": "Chennai",    "result": None, "margin": None, "applied": False},
-    {"home": "Delhi Capitals",              "away": "Mumbai Indians",              "venue": "Delhi",      "result": None, "margin": None, "applied": False},
-    {"home": "Gujarat Titans",              "away": "Rajasthan Royals",            "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},
-    {"home": "Sunrisers Hyderabad",         "away": "Lucknow Super Giants",        "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},
-    {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings",         "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders",       "away": "Punjab Kings",                "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals",            "away": "Mumbai Indians",              "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
-    {"home": "Delhi Capitals",              "away": "Gujarat Titans",              "venue": "Delhi",      "result": None, "margin": None, "applied": False},
-    {"home": "Kolkata Knight Riders",       "away": "Lucknow Super Giants",        "venue": "Kolkata",    "result": None, "margin": None, "applied": False},
-    {"home": "Rajasthan Royals",            "away": "Royal Challengers Bengaluru", "venue": "Guwahati",   "result": None, "margin": None, "applied": False},
-    {"home": "Punjab Kings",                "away": "Sunrisers Hyderabad",         "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},
-    {"home": "Chennai Super Kings",         "away": "Delhi Capitals",              "venue": "Chennai",    "result": None, "margin": None, "applied": False},
-    {"home": "Lucknow Super Giants",        "away": "Gujarat Titans",              "venue": "Lucknow",    "result": None, "margin": None, "applied": False},
-    {"home": "Mumbai Indians",              "away": "Royal Challengers Bengaluru", "venue": "Mumbai",     "result": None, "margin": None, "applied": False},
+    # ── Phase 1: Matches 1–20 (Mar 28 – Apr 12) ────────────────────────────
+    {"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad",        "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},  # M1
+    {"home": "Mumbai Indians",              "away": "Kolkata Knight Riders",       "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M2
+    {"home": "Rajasthan Royals",            "away": "Chennai Super Kings",         "venue": "Guwahati",   "result": None, "margin": None, "applied": False},  # M3
+    {"home": "Punjab Kings",                "away": "Gujarat Titans",              "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},  # M4
+    {"home": "Lucknow Super Giants",        "away": "Delhi Capitals",              "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M5
+    {"home": "Kolkata Knight Riders",       "away": "Sunrisers Hyderabad",         "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M6
+    {"home": "Chennai Super Kings",         "away": "Punjab Kings",                "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M7
+    {"home": "Delhi Capitals",              "away": "Mumbai Indians",              "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M8
+    {"home": "Gujarat Titans",              "away": "Rajasthan Royals",            "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M9
+    {"home": "Sunrisers Hyderabad",         "away": "Lucknow Super Giants",        "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M10
+    {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings",         "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},  # M11
+    {"home": "Kolkata Knight Riders",       "away": "Punjab Kings",                "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M12
+    {"home": "Rajasthan Royals",            "away": "Mumbai Indians",              "venue": "Guwahati",   "result": None, "margin": None, "applied": False},  # M13
+    {"home": "Delhi Capitals",              "away": "Gujarat Titans",              "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M14
+    {"home": "Kolkata Knight Riders",       "away": "Lucknow Super Giants",        "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M15
+    {"home": "Rajasthan Royals",            "away": "Royal Challengers Bengaluru", "venue": "Guwahati",   "result": None, "margin": None, "applied": False},  # M16
+    {"home": "Punjab Kings",                "away": "Sunrisers Hyderabad",         "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},  # M17 FIXED: PBKS home, SRH away
+    {"home": "Chennai Super Kings",         "away": "Delhi Capitals",              "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M18
+    {"home": "Lucknow Super Giants",        "away": "Gujarat Titans",              "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M19
+    {"home": "Mumbai Indians",              "away": "Royal Challengers Bengaluru", "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M20 FIXED: MI home, RCB away
+    # ── Phase 2: Matches 21–70 (Apr 13 – May 24) ───────────────────────────
+    {"home": "Sunrisers Hyderabad",         "away": "Rajasthan Royals",            "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M21
+    {"home": "Chennai Super Kings",         "away": "Kolkata Knight Riders",       "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M22
+    {"home": "Royal Challengers Bengaluru", "away": "Lucknow Super Giants",        "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},  # M23
+    {"home": "Mumbai Indians",              "away": "Punjab Kings",                "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M24
+    {"home": "Gujarat Titans",              "away": "Kolkata Knight Riders",       "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M25
+    {"home": "Royal Challengers Bengaluru", "away": "Delhi Capitals",              "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},  # M26
+    {"home": "Sunrisers Hyderabad",         "away": "Chennai Super Kings",         "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M27
+    {"home": "Kolkata Knight Riders",       "away": "Rajasthan Royals",            "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M28
+    {"home": "Punjab Kings",                "away": "Lucknow Super Giants",        "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},  # M29
+    {"home": "Gujarat Titans",              "away": "Mumbai Indians",              "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M30
+    {"home": "Sunrisers Hyderabad",         "away": "Delhi Capitals",              "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M31
+    {"home": "Lucknow Super Giants",        "away": "Rajasthan Royals",            "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M32
+    {"home": "Mumbai Indians",              "away": "Chennai Super Kings",         "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M33
+    {"home": "Royal Challengers Bengaluru", "away": "Gujarat Titans",              "venue": "Bengaluru",  "result": None, "margin": None, "applied": False},  # M34
+    {"home": "Delhi Capitals",              "away": "Punjab Kings",                "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M35
+    {"home": "Rajasthan Royals",            "away": "Sunrisers Hyderabad",         "venue": "Jaipur",     "result": None, "margin": None, "applied": False},  # M36
+    {"home": "Gujarat Titans",              "away": "Chennai Super Kings",         "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M37
+    {"home": "Lucknow Super Giants",        "away": "Kolkata Knight Riders",       "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M38
+    {"home": "Delhi Capitals",              "away": "Royal Challengers Bengaluru", "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M39
+    {"home": "Punjab Kings",                "away": "Rajasthan Royals",            "venue": "Mullanpur",  "result": None, "margin": None, "applied": False},  # M40
+    {"home": "Mumbai Indians",              "away": "Sunrisers Hyderabad",         "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M41
+    {"home": "Gujarat Titans",              "away": "Royal Challengers Bengaluru", "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M42
+    {"home": "Rajasthan Royals",            "away": "Delhi Capitals",              "venue": "Jaipur",     "result": None, "margin": None, "applied": False},  # M43
+    {"home": "Chennai Super Kings",         "away": "Mumbai Indians",              "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M44
+    {"home": "Sunrisers Hyderabad",         "away": "Kolkata Knight Riders",       "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M45
+    {"home": "Gujarat Titans",              "away": "Punjab Kings",                "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M46
+    {"home": "Mumbai Indians",              "away": "Lucknow Super Giants",        "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M47
+    {"home": "Delhi Capitals",              "away": "Chennai Super Kings",         "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M48
+    {"home": "Sunrisers Hyderabad",         "away": "Punjab Kings",                "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M49
+    {"home": "Lucknow Super Giants",        "away": "Royal Challengers Bengaluru", "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M50
+    {"home": "Delhi Capitals",              "away": "Kolkata Knight Riders",       "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M51
+    {"home": "Rajasthan Royals",            "away": "Gujarat Titans",              "venue": "Jaipur",     "result": None, "margin": None, "applied": False},  # M52
+    {"home": "Chennai Super Kings",         "away": "Lucknow Super Giants",        "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M53
+    {"home": "Royal Challengers Bengaluru", "away": "Mumbai Indians",              "venue": "Raipur",     "result": None, "margin": None, "applied": False},  # M54
+    {"home": "Punjab Kings",                "away": "Delhi Capitals",              "venue": "Dharamsala", "result": None, "margin": None, "applied": False},  # M55
+    {"home": "Gujarat Titans",              "away": "Sunrisers Hyderabad",         "venue": "Ahmedabad",  "result": None, "margin": None, "applied": False},  # M56
+    {"home": "Royal Challengers Bengaluru", "away": "Kolkata Knight Riders",       "venue": "Raipur",     "result": None, "margin": None, "applied": False},  # M57
+    {"home": "Punjab Kings",                "away": "Mumbai Indians",              "venue": "Dharamsala", "result": None, "margin": None, "applied": False},  # M58
+    {"home": "Lucknow Super Giants",        "away": "Chennai Super Kings",         "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M59
+    {"home": "Kolkata Knight Riders",       "away": "Gujarat Titans",              "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M60
+    {"home": "Punjab Kings",                "away": "Royal Challengers Bengaluru", "venue": "Dharamsala", "result": None, "margin": None, "applied": False},  # M61
+    {"home": "Delhi Capitals",              "away": "Rajasthan Royals",            "venue": "Delhi",      "result": None, "margin": None, "applied": False},  # M62
+    {"home": "Chennai Super Kings",         "away": "Sunrisers Hyderabad",         "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M63
+    {"home": "Rajasthan Royals",            "away": "Lucknow Super Giants",        "venue": "Jaipur",     "result": None, "margin": None, "applied": False},  # M64
+    {"home": "Kolkata Knight Riders",       "away": "Mumbai Indians",              "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M65
+    {"home": "Chennai Super Kings",         "away": "Gujarat Titans",              "venue": "Chennai",    "result": None, "margin": None, "applied": False},  # M66
+    {"home": "Sunrisers Hyderabad",         "away": "Royal Challengers Bengaluru", "venue": "Hyderabad",  "result": None, "margin": None, "applied": False},  # M67
+    {"home": "Lucknow Super Giants",        "away": "Punjab Kings",                "venue": "Lucknow",    "result": None, "margin": None, "applied": False},  # M68
+    {"home": "Mumbai Indians",              "away": "Rajasthan Royals",            "venue": "Mumbai",     "result": None, "margin": None, "applied": False},  # M69
+    {"home": "Kolkata Knight Riders",       "away": "Delhi Capitals",              "venue": "Kolkata",    "result": None, "margin": None, "applied": False},  # M70
 ]
 
-TOTAL_MATCHES     = 80  # IPL 2026 expanded league stage
+TOTAL_MATCHES     = 70  # IPL 2026 league stage (14 matches per team, 70 total)
 MATCHES_COMMITTED = 0   # auto-incremented by commit_result()
+
 
 # ---------------------------------------------------------------------------
 # Committed results log — auto-managed, do not edit manually
