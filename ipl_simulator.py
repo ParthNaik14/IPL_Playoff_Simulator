@@ -46,15 +46,15 @@ updated_points_data = {
 # Elo ratings — auto-updated by commit_result (margin-aware)
 # ---------------------------------------------------------------------------
 elo_ratings = {
-    "Gujarat Titans":               1515.0,
-    "Mumbai Indians":               1508.0,
-    "Sunrisers Hyderabad":          1504.9,
-    "Lucknow Super Giants":         1503.7,
-    "Royal Challengers Bengaluru":  1503.6,
-    "Kolkata Knight Riders":        1502.0,
-    "Punjab Kings":                 1499.4,
-    "Delhi Capitals":               1493.5,
-    "Rajasthan Royals":             1486.9,
+    "Mumbai Indians":               1515.0,
+    "Royal Challengers Bengaluru":  1511.5,
+    "Gujarat Titans":               1508.5,
+    "Punjab Kings":                 1505.5,
+    "Lucknow Super Giants":         1501.0,
+    "Sunrisers Hyderabad":          1497.5,
+    "Delhi Capitals":               1494.0,
+    "Kolkata Knight Riders":        1491.0,
+    "Rajasthan Royals":             1488.0,
     "Chennai Super Kings":          1485.0,
 }
 
