@@ -90,19 +90,19 @@ def get_form_score(team):
 # Venue-specific home advantage multipliers
 # ---------------------------------------------------------------------------
 home_advantage = {
-    "MUMBAI":     1.08,
-    "CHENNAI":    1.07,
+    "CHENNAI":    1.10,
+    "JAIPUR":     1.09,
+    "AHMEDABAD":  1.08,
+    "MUMBAI":     1.07,
     "KOLKATA":    1.06,
-    "BENGALURU":  1.05,
     "HYDERABAD":  1.05,
-    "AHMEDABAD":  1.04,
-    "JAIPUR":     1.04,
+    "BENGALURU":  1.04,
     "DELHI":      1.03,
-    "LUCKNOW":    1.03,
-    "MULLANPUR":  1.03,
-    "DHARAMSALA": 1.04,
-    "RAIPUR":     1.03,
-    "GUWAHATI":   1.02,
+    "LUCKNOW":    1.02,
+    "MULLANPUR":  1.01,
+    "DHARAMSALA": 1.00,
+    "RAIPUR":     1.00,
+    "GUWAHATI":   1.00,
 }
 
 def get_home_boost(venue):
