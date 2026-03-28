@@ -53,6 +53,25 @@ def _clear_whatif_state():
         st.session_state.pop(f"loser_overs_{i}", None)
 
 
+# --- Callbacks for Randomisation (Fixes StreamlitAPIException) ---
+def randomize_single_callback(idx, m_home, m_away, m_venue):
+    sc = sim.generate_random_scorecard(m_home, m_away, m_venue)
+    st.session_state[f"whatif_result_{idx}"] = sc["winner"]
+    st.session_state[f"winner_runs_{idx}"] = sc["winner_runs"]
+    st.session_state[f"winner_overs_{idx}"] = sc["winner_overs"]
+    st.session_state[f"loser_runs_{idx}"] = sc["loser_runs"]
+    st.session_state[f"loser_overs_{idx}"] = sc["loser_overs"]
+
+def randomize_all_callback():
+    for idx, match in enumerate(sim.remaining_matches):
+        sc = sim.generate_random_scorecard(match["home"], match["away"], match["venue"])
+        st.session_state[f"whatif_result_{idx}"] = sc["winner"]
+        st.session_state[f"winner_runs_{idx}"] = sc["winner_runs"]
+        st.session_state[f"winner_overs_{idx}"] = sc["winner_overs"]
+        st.session_state[f"loser_runs_{idx}"] = sc["loser_runs"]
+        st.session_state[f"loser_overs_{idx}"] = sc["loser_overs"]
+
+
 # ============================================================
 # ADMIN SECTION 1 — COMMIT REAL RESULT
 # ============================================================
@@ -142,7 +161,6 @@ if admin_mode:
         )
         st.sidebar.caption(f"Will undo: **{label}**")
 
-        # Two-step confirmation to prevent accidental decommits
         if "confirm_decommit" not in st.session_state:
             st.session_state.confirm_decommit = False
 
@@ -263,9 +281,23 @@ what_if_matches = []
 
 for i, match in enumerate(sim.remaining_matches):
     match_number = sim.MATCHES_COMMITTED + i + 1
+    home_p, away_p = sim.get_win_probability(match["home"], match["away"], match["venue"])
+
     with st.sidebar.expander(
             f"📌 Match {match_number}: {match['home']} vs {match['away']}", expanded=False
     ):
+        st.caption(
+            f"🏠 **{match['home']}** {home_p}%  ·  "
+            f"✈️ **{match['away']}** {away_p}%  ·  📍 {match['venue']}"
+        )
+
+        st.button(
+            "🎲 Random Result",
+            key=f"rand_{i}",
+            on_click=randomize_single_callback,
+            args=(i, match["home"], match["away"], match["venue"])
+        )
+
         winner = st.selectbox(
             "Select Result",
             options=["", match["home"], match["away"], "Abandoned/No Result (1 point each)"],
@@ -290,6 +322,10 @@ for i, match in enumerate(sim.remaining_matches):
                 match_dict["runs"] = {winner: winner_runs, loser: loser_runs}
                 match_dict["overs"] = {winner: winner_overs, loser: loser_overs}
         what_if_matches.append(match_dict)
+
+# Randomise All + Apply buttons
+st.sidebar.markdown("---")
+st.sidebar.button("🎲 Randomise All Remaining Matches", on_click=randomize_all_callback)
 
 if st.sidebar.button("✅ Apply What-if Scenarios"):
     sim.set_what_if_results(what_if_matches)
