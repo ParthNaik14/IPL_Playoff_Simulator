@@ -482,12 +482,10 @@ def set_what_if_results(new_remaining_matches):
 # Pre-match win probability
 # ---------------------------------------------------------------------------
 def get_win_probability(home, away, venue):
-    # FIX: Static Elo normalization to prevent 0 scores
     elo_norm = {t: np.clip((elo_ratings[t] - 1350) / 300, 0.1, 0.9) for t in teams}
     form_scores = {t: get_form_score(t) for t in teams}
     nrr_scores = {t: np.clip((calculate_nrr(updated_points_data[t]) + 3) / 6, 0.0, 1.0) for t in teams}
 
-    # FIX: Laplace smoothing for Win Pct
     win_pcts = {
         t: (updated_points_data[t]["points"] + 2) / ((updated_points_data[t]["matches"] + 2) * 2)
         for t in teams
@@ -499,7 +497,6 @@ def get_win_probability(home, away, venue):
     winpct_weight = 0.15
     nrr_weight = 1.0 - elo_weight - form_weight - winpct_weight
 
-    # FIX: Baseline floor so no team is mathematically locked out of winning
     raw = {
         t: max(0.05, elo_weight * elo_norm[t] + form_weight * form_scores[t] +
                winpct_weight * win_pcts[t] + nrr_weight * nrr_scores[t])
@@ -516,6 +513,40 @@ def get_win_probability(home, away, venue):
 
 
 # ---------------------------------------------------------------------------
+# Shared helper: build Elo-weighted match probabilities
+# ---------------------------------------------------------------------------
+def _build_match_probs(pending):
+    """Return a list of (home, away, venue, home_win_prob) for pending matches."""
+    elo_norm = {t: np.clip((elo_ratings[t] - 1350) / 300, 0.1, 0.9) for t in teams}
+    form_scores_local = {t: get_form_score(t) for t in teams}
+    nrr_scores = {t: np.clip((calculate_nrr(updated_points_data[t]) + 3) / 6, 0.0, 1.0) for t in teams}
+    win_pcts = {
+        t: (updated_points_data[t]["points"] + 2) / ((updated_points_data[t]["matches"] + 2) * 2)
+        for t in teams
+    }
+    mp = max(d["matches"] for d in updated_points_data.values())
+    form_weight = min(0.30, 0.06 * mp)
+    elo_weight = max(0.45, 0.55 - 0.02 * mp)
+    winpct_weight = 0.15
+    nrr_weight = 1.0 - elo_weight - form_weight - winpct_weight
+    raw = {
+        t: max(0.05, elo_weight * elo_norm[t] + form_weight * form_scores_local[t] +
+               winpct_weight * win_pcts[t] + nrr_weight * nrr_scores[t])
+        for t in teams
+    }
+    total_raw = sum(raw.values())
+    hw = {t: raw[t] / total_raw for t in teams}
+
+    result = []
+    for m in pending:
+        boost = get_home_boost(m.get("venue", ""))
+        sh = hw[m["home"]] * boost
+        sa = hw[m["away"]]
+        result.append((m["home"], m["away"], m.get("venue", ""), sh / (sh + sa)))
+    return result
+
+
+# ---------------------------------------------------------------------------
 # Random scorecard generator
 # ---------------------------------------------------------------------------
 def generate_random_scorecard(home, away, venue):
@@ -523,7 +554,7 @@ def generate_random_scorecard(home, away, venue):
     winner = home if np.random.rand() < home_p / 100 else away
     loser = away if winner == home else home
 
-    first_innings_runs = int(np.clip(np.random.normal(170, 25), 110, 240))
+    first_innings_runs = int(np.clip(np.random.normal(185, 30), 66, 287))
     chase_won = np.random.rand() < 0.52
 
     if chase_won:
@@ -688,8 +719,8 @@ def run_adjusted_simulation(num_simulations, what_if=False, override_matches=Non
         f5 = vals[4]
         f3 = vals[2]
 
-        st = sorted(teams, key=lambda t: (pts[t], nrrs[t]), reverse=True)
-        for i, t in enumerate(st):
+        st_sorted = sorted(teams, key=lambda t: (pts[t], nrrs[t]), reverse=True)
+        for i, t in enumerate(st_sorted):
             if i < 4: top4_c[t] += 1
             if i < 2: top2_c[t] += 1
             if pts[t] > f5: top4_pts[t] += 1
@@ -740,38 +771,53 @@ def get_points_table_after_what_if(what_if_matches):
 
 
 # ---------------------------------------------------------------------------
-# Pure Math simulation (parallel)
+# Pure Math simulation worker — now also tracks safe4 / safe2
+# ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Pure Math simulation worker
 # ---------------------------------------------------------------------------
 def run_pure_math_worker(args):
     seed, sims, base_pts, pending = args
     np.random.seed(seed)
     top4 = {t: 0 for t in teams}
     top2 = {t: 0 for t in teams}
+    safe4 = {t: 0 for t in teams}
+    safe2 = {t: 0 for t in teams}
 
     for _ in range(sims):
         pts = base_pts.copy()
         for m in pending:
             pts[np.random.choice([m["home"], m["away"]])] += 2
 
-        st = sorted(pts.items(), key=lambda x: x[1], reverse=True)
+        st_sorted = sorted(pts.items(), key=lambda x: x[1], reverse=True)
+        f4 = st_sorted[3][1]
+        f2 = st_sorted[1][1]
 
-        f4 = st[3][1]
-        above4 = [t for t, p in st if p > f4]
-        tied4 = [t for t, p in st if p == f4]
+        # FIX: Compare against 5th place (index 4) and 3rd place (index 2)
+        f5_pts = st_sorted[4][1]
+        f3_pts = st_sorted[2][1]
+
+        for t in teams:
+            if pts[t] > f5_pts:
+                safe4[t] += 1
+            if pts[t] > f3_pts:
+                safe2[t] += 1
+
+        above4 = [t for t, p in st_sorted if p > f4]
+        tied4 = [t for t, p in st_sorted if p == f4]
         spots4 = 4 - len(above4)
         for t in above4: top4[t] += 1
         if spots4 > 0 and tied4:
             for t in tied4: top4[t] += spots4 / len(tied4)
 
-        f2 = st[1][1]
-        above2 = [t for t, p in st if p > f2]
-        tied2 = [t for t, p in st if p == f2]
+        above2 = [t for t, p in st_sorted if p > f2]
+        tied2 = [t for t, p in st_sorted if p == f2]
         spots2 = 2 - len(above2)
         for t in above2: top2[t] += 1
         if spots2 > 0 and tied2:
             for t in tied2: top2[t] += spots2 / len(tied2)
 
-    return {"top4": top4, "top2": top2}
+    return {"top4": top4, "top2": top2, "safe4": safe4, "safe2": safe2}
 
 
 def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_matches=None):
@@ -779,10 +825,18 @@ def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_ma
     base_pts, base_nrr, pending, _ = get_what_if_baseline(matches)
 
     if not pending:
-        st = sorted(teams, key=lambda t: (base_pts[t], base_nrr[t]), reverse=True)
+        st_sorted = sorted(teams, key=lambda t: (base_pts[t], base_nrr[t]), reverse=True)
+        in4 = set(st_sorted[:4])
+        in2 = set(st_sorted[:2])
+
+        # FIX: Compare against 5th and 3rd at the end of the season
+        f5_pts = base_pts[st_sorted[4]]
+        f3_pts = base_pts[st_sorted[2]]
         return {
-            "top4": {t: 100.0 if t in st[:4] else 0.0 for t in teams},
-            "top2": {t: 100.0 if t in st[:2] else 0.0 for t in teams}
+            "top4": {t: 100.0 if t in in4 else 0.0 for t in teams},
+            "top2": {t: 100.0 if t in in2 else 0.0 for t in teams},
+            "safe4": {t: 100.0 if base_pts[t] > f5_pts else 0.0 for t in teams},
+            "safe2": {t: 100.0 if base_pts[t] > f3_pts else 0.0 for t in teams},
         }
 
     spc = total_sims // processes
@@ -793,11 +847,47 @@ def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_ma
 
     combined4 = {t: sum(r["top4"][t] for r in results) for t in teams}
     combined2 = {t: sum(r["top2"][t] for r in results) for t in teams}
+    combined_s4 = {t: sum(r["safe4"][t] for r in results) for t in teams}
+    combined_s2 = {t: sum(r["safe2"][t] for r in results) for t in teams}
 
     return {
         "top4": {t: round(combined4[t] / total_sims * 100, 2) for t in teams},
         "top2": {t: round(combined2[t] / total_sims * 100, 2) for t in teams},
+        "safe4": {t: round(combined_s4[t] / total_sims * 100, 2) for t in teams},
+        "safe2": {t: round(combined_s2[t] / total_sims * 100, 2) for t in teams},
     }
+
+
+# ---------------------------------------------------------------------------
+# NEW: Tragic Status Helper
+# ---------------------------------------------------------------------------
+def calculate_tragic_status(pure_math_res, pending_count):
+    """
+    Assigns definitive status badges. If the season is over (Match 70),
+    it uses 'Qualified/Eliminated' instead of 'Safe/Out'.
+    """
+    status_map = {}
+    for t in teams:
+        possible = pure_math_res["top4"][t]
+
+        # Case A: The season is finished
+        if pending_count == 0:
+            status_map[t] = "✅ QUALIFIED" if possible >= 100.0 else "❌ ELIMINATED"
+
+        # Case B: The season is still ongoing
+        else:
+            if possible >= 100.0:
+                status_map[t] = "⭐ SAFE"
+            elif possible <= 0.0:
+                status_map[t] = "❌ OUT"
+            elif possible < 15.0:
+                status_map[t] = "⚠️ E1 (Must Win)"
+            elif possible < 35.0:
+                status_map[t] = "📉 E2"
+            else:
+                status_map[t] = "🏏 In Hunt"
+
+    return status_map
 
 
 # ---------------------------------------------------------------------------
@@ -834,11 +924,184 @@ def run_parallel_simulations(total_sims=10000, processes=4, override_matches=Non
 
 
 # ---------------------------------------------------------------------------
+# NEW: Exact Combination Counter
+# ---------------------------------------------------------------------------
+def count_combination(team_combo, num_sims=50000, override_matches=None):
+    """
+    Calculate what % of Elo-weighted simulations result in *exactly* team_combo
+    as the top 4 (using random NRR tie-breaking at the boundary).
+
+    Args:
+        team_combo : list/set of team names (2–4 teams)
+        num_sims   : number of Monte Carlo iterations
+        override_matches : optional what-if match list
+
+    Returns:
+        float — percentage (0–100)
+    """
+    matches = override_matches if override_matches is not None else remaining_matches
+    base_pts, base_nrr, pending, _ = get_what_if_baseline(matches)
+    combo_set = set(team_combo)
+
+    if not pending:
+        sorted_t = sorted(teams, key=lambda t: (base_pts[t], base_nrr[t]), reverse=True)
+        actual_top4 = set(sorted_t[:4])
+        return 100.0 if actual_top4 == combo_set else 0.0
+
+    match_probs = _build_match_probs(pending)
+
+    count = 0
+    for _ in range(num_sims):
+        pts = base_pts.copy()
+        for h, a, _venue, prob in match_probs:
+            winner = h if np.random.rand() < prob else a
+            pts[winner] += 2
+
+        sorted_by_pts = sorted(pts.items(), key=lambda x: x[1], reverse=True)
+        f4 = sorted_by_pts[3][1]
+
+        above4 = [t for t, p in sorted_by_pts if p > f4]
+        tied4  = [t for t, p in sorted_by_pts if p == f4]
+        spots4 = 4 - len(above4)
+
+        if spots4 <= 0 or not tied4:
+            top4 = set(above4[:4])
+        else:
+            n_pick = min(spots4, len(tied4))
+            chosen = np.random.choice(tied4, size=n_pick, replace=False).tolist()
+            top4 = set(above4) | set(chosen)
+
+        if top4 == combo_set:
+            count += 1
+
+    return round(count / num_sims * 100, 2)
+
+
+# ---------------------------------------------------------------------------
+# Core sorting logic (To be used in ALL simulation functions)
+# ---------------------------------------------------------------------------
+def _get_sorted_standings(pts_dict, nrr_dict):
+    """
+    Sorts teams by Points, then NRR, then a random tie-breaker.
+    Ensures mathematical consistency even in perfect ties.
+    """
+    # Create a random shuffle for the ultimate tie-breaker
+    tie_breaker_list = list(teams)
+    np.random.seed()  # Ensure fresh randomness
+    np.random.shuffle(tie_breaker_list)
+    tb_rank = {team: i for i, team in enumerate(tie_breaker_list)}
+
+    # Sort: Points (Primary), NRR (Secondary), tb_rank (Tertiary)
+    return sorted(teams, key=lambda t: (pts_dict[t], nrr_dict[t], tb_rank[t]), reverse=True)
+
+
+# ---------------------------------------------------------------------------
+# UPDATED: God Mode & Pathfinder using main scorecard logic
+# ---------------------------------------------------------------------------
+def generate_forced_scenario(forced_top4, max_attempts=200_000, override_matches=None):
+    matches = override_matches if override_matches is not None else remaining_matches
+    base_pts, _, pending, base_td = get_what_if_baseline(matches)
+    forced_set = set(forced_top4)
+    match_probs = _build_match_probs(pending)
+
+    for attempt in range(max_attempts):
+        td = {t: dict(base_td[t]) for t in teams}
+        match_results = []
+
+        for h, a, venue, prob in match_probs:
+            # Loaded Dice
+            if h in forced_set and a not in forced_set:
+                actual_p = 0.82
+            elif a in forced_set and h not in forced_set:
+                actual_p = 0.18
+            else:
+                actual_p = prob
+
+            # REUSING YOUR MAIN LOGIC:
+            sc = generate_random_scorecard(h, a, venue)
+            # Override winner based on loaded dice
+            winner = h if np.random.rand() < actual_p else a
+            loser = a if winner == h else h
+
+            # Extract scores from your scorecard generator
+            # (Logic ensures winner always has more runs)
+            wr, lr = sc["winner_runs"], sc["loser_runs"]
+            wo, lo = sc["winner_overs"], sc["loser_overs"]
+
+            td[winner]["points"] += 2
+            td[winner]["runs_for"] += wr
+            td[winner]["overs_faced"] += overs_to_float(wo)
+            td[winner]["runs_against"] += lr
+            td[winner]["overs_bowled"] += overs_to_float(lo)
+
+            td[loser]["runs_for"] += lr
+            td[loser]["overs_faced"] += overs_to_float(lo)
+            td[loser]["runs_against"] += wr
+            td[loser]["overs_bowled"] += overs_to_float(wo)
+
+            match_results.append({
+                "Winner": winner, "winner_runs": wr, "winner_overs": wo,
+                "loser_runs": lr, "loser_overs": lo
+            })
+
+        final_pts = {t: td[t]["points"] for t in teams}
+        final_nrr = {t: calculate_nrr(td[t]) for t in teams}
+        st_sorted = _get_sorted_standings(final_pts, final_nrr)
+
+        # Realism Filter: Exactly 4 teams AND top team <= 22 points
+        if set(st_sorted[:4]) == forced_set and max(final_pts.values()) <= 22:
+            return match_results, final_pts, attempt + 1
+
+    return None, None, max_attempts
+
+
+def generate_single_team_route(target_team, target_rank, max_attempts=100_000):
+    base_pts, _, pending, base_td = get_what_if_baseline(remaining_matches)
+    match_probs = _build_match_probs(pending)
+
+    for attempt in range(max_attempts):
+        td = {t: dict(base_td[t]) for t in teams}
+        results = []
+        for h, a, venue, prob in match_probs:
+            # Bias ONLY for the target team
+            if h == target_team:
+                actual_p = 0.85
+            elif a == target_team:
+                actual_p = 0.15
+            else:
+                actual_p = prob
+
+            winner = h if np.random.rand() < actual_p else a
+            sc = generate_random_scorecard(h, a, venue)
+
+            td[winner]["points"] += 2
+            # Add NRR tracking here similar to the block above...
+
+            results.append({"Winner": winner, "winner_runs": sc["winner_runs"], "winner_overs": sc["winner_overs"],
+                            "loser_runs": sc["loser_runs"], "loser_overs": sc["loser_overs"]})
+
+        final_pts = {t: td[t]["points"] for t in teams}
+        final_nrr = {t: calculate_nrr(td[t]) for t in teams}
+        st = _get_sorted_standings(final_pts, final_nrr)
+
+        actual_rank = st.index(target_team) + 1
+        success = (actual_rank == target_rank) if isinstance(target_rank, int) else (actual_rank <= 4)
+
+        if success and max(final_pts.values()) <= 22:
+            return results, final_pts, attempt + 1
+    return None, None, max_attempts
+
+
+# ---------------------------------------------------------------------------
 # Styling
 # ---------------------------------------------------------------------------
 def fancy_highlight_half_split(df):
-    pct_cols = ["Qualify %", "Top 2 %", "Safe by Points %",
-                "Safe Top 2 %", "Still Possible %", "Top 2 Still Possible %"]
+    pct_cols = [
+        "Qualify %", "Top 2 %",
+        "Safe by Points %", "Safe Top 2 %",
+        "Still Possible %", "Top 2 Still Possible %",
+        "Math Safe by Pts %", "Math Safe Top 2 %",   # new columns
+    ]
 
     def color_by_pct(val):
         if pd.isna(val): return ""
@@ -862,7 +1125,6 @@ def fancy_highlight_half_split(df):
         return ""
 
     def color_avg_pts(val):
-        """Neutral blue gradient for avg points — higher = darker blue."""
         if pd.isna(val): return ""
         try:
             val = float(val)
@@ -875,7 +1137,6 @@ def fancy_highlight_half_split(df):
         return f"background-color: rgb({r},{g},{b}); color: white"
 
     def color_avg_nrr(val):
-        """Green for positive NRR, red for negative, white near zero."""
         if pd.isna(val): return ""
         try:
             val = float(val)
@@ -891,9 +1152,11 @@ def fancy_highlight_half_split(df):
             return f"background-color: rgb({r},20,20); color: white"
         return "background-color: #36454F; color: white"
 
-    fmt = {c: "{:.2f}" for c in pct_cols}
-    fmt["Avg Final Points"] = "{:d}"
-    fmt["Avg Final NRR"] = "{:.3f}"
+    fmt = {c: "{:.2f}" for c in pct_cols if c in df.columns}
+    if "Avg Final Points" in df.columns:
+        fmt["Avg Final Points"] = "{:d}"
+    if "Avg Final NRR" in df.columns:
+        fmt["Avg Final NRR"] = "{:.3f}"
     styled = df.style.format(fmt)
 
     for col in pct_cols:
@@ -926,6 +1189,8 @@ def run_full_simulation_and_prompt():
 
     df["Still Possible %"] = df["Team"].map(pure_math["top4"])
     df["Top 2 Still Possible %"] = df["Team"].map(pure_math["top2"])
+    df["Math Safe by Pts %"] = df["Team"].map(pure_math["safe4"])
+    df["Math Safe Top 2 %"]  = df["Team"].map(pure_math["safe2"])
 
     styled_df = fancy_highlight_half_split(df)
     print(df)
