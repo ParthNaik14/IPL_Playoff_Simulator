@@ -32,10 +32,10 @@ teams = [
 updated_points_data = {
     "Royal Challengers Bengaluru": {"points": 2, "matches": 1, "runs_for": 203, "overs_faced": "15.4", "runs_against": 201, "overs_bowled": "20.0"},
     "Punjab Kings": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Mumbai Indians": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Mumbai Indians": {"points": 2, "matches": 1, "runs_for": 224, "overs_faced": "19.1", "runs_against": 220, "overs_bowled": "20.0"},
     "Gujarat Titans": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
     "Delhi Capitals": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Kolkata Knight Riders": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Kolkata Knight Riders": {"points": 0, "matches": 1, "runs_for": 220, "overs_faced": "20.0", "runs_against": 224, "overs_bowled": "19.1"},
     "Lucknow Super Giants": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
     "Sunrisers Hyderabad": {"points": 0, "matches": 1, "runs_for": 201, "overs_faced": "20.0", "runs_against": 203, "overs_bowled": "15.4"},
     "Rajasthan Royals": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
@@ -46,12 +46,12 @@ updated_points_data = {
 # Elo ratings — auto-updated by commit_result (margin-aware)
 # ---------------------------------------------------------------------------
 elo_ratings = {
-    "Mumbai Indians":                        1515.0,
+    "Mumbai Indians":                        1529.25,
     "Gujarat Titans":                        1512.4,
     "Royal Challengers Bengaluru":           1524.99,
     "Punjab Kings":                          1506.5,
     "Lucknow Super Giants":                  1502.2,
-    "Kolkata Knight Riders":                 1498.7,
+    "Kolkata Knight Riders":                 1484.45,
     "Rajasthan Royals":                      1495.3,
     "Sunrisers Hyderabad":                   1476.91,
     "Delhi Capitals":                        1488.6,
@@ -63,9 +63,9 @@ ELO_K = 32
 recent_form = {
     "Royal Challengers Bengaluru":           [1],
     "Gujarat Titans":                        [],
-    "Mumbai Indians":                        [],
+    "Mumbai Indians":                        [1],
     "Punjab Kings":                          [],
-    "Kolkata Knight Riders":                 [],
+    "Kolkata Knight Riders":                 [0],
     "Delhi Capitals":                        [],
     "Lucknow Super Giants":                  [],
     "Sunrisers Hyderabad":                   [0],
@@ -113,7 +113,6 @@ def get_home_boost(venue):
 # IPL 2026 Schedule — Full 70 matches
 # ---------------------------------------------------------------------------
 remaining_matches = [
-    {"home": "Mumbai Indians",              "away": "Kolkata Knight Riders",       "venue": "Mumbai",          "result": None, "margin": None, "applied": False},
     {"home": "Rajasthan Royals",            "away": "Chennai Super Kings",         "venue": "Guwahati",        "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings",                "away": "Gujarat Titans",              "venue": "New Chandigarh",  "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants",        "away": "Delhi Capitals",              "venue": "Lucknow",         "result": None, "margin": None, "applied": False},
@@ -185,12 +184,12 @@ remaining_matches = [
 ]
 
 TOTAL_MATCHES = 70
-MATCHES_COMMITTED = 1
+MATCHES_COMMITTED = 2
 
 # ---------------------------------------------------------------------------
 # Committed results log
 # ---------------------------------------------------------------------------
-committed_results = [{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 203, "winner_overs_str": "15.4", "loser_runs": 201, "loser_overs_str": "20.0", "elo_before": {"Royal Challengers Bengaluru": 1509.8, "Sunrisers Hyderabad": 1492.1}, "form_before": {"Royal Challengers Bengaluru": [], "Sunrisers Hyderabad": []}}]  # END_COMMITTED_RESULTS
+committed_results = [{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 203, "winner_overs_str": "15.4", "loser_runs": 201, "loser_overs_str": "20.0", "elo_before": {"Royal Challengers Bengaluru": 1509.8, "Sunrisers Hyderabad": 1492.1}, "form_before": {"Royal Challengers Bengaluru": [], "Sunrisers Hyderabad": []}}, {"home": "Mumbai Indians", "away": "Kolkata Knight Riders", "venue": "Mumbai", "winner": "Mumbai Indians", "abandoned": False, "winner_runs": 224, "winner_overs_str": "19.1", "loser_runs": 220, "loser_overs_str": "20.0", "elo_before": {"Mumbai Indians": 1515.0, "Kolkata Knight Riders": 1498.7}, "form_before": {"Mumbai Indians": [], "Kolkata Knight Riders": []}}]  # END_COMMITTED_RESULTS
 
 
 # ---------------------------------------------------------------------------
@@ -863,29 +862,22 @@ def run_pure_math_simulation_parallel(total_sims=10000, processes=4, override_ma
 # ---------------------------------------------------------------------------
 def calculate_tragic_status(pure_math_res, pending_count):
     """
-    Assigns definitive status badges. If the season is over (Match 70),
-    it uses 'Qualified/Eliminated' instead of 'Safe/Out'.
+    Assigns definitive status badges based purely on mathematical possibility.
     """
     status_map = {}
     for t in teams:
         possible = pure_math_res["top4"][t]
 
-        # Case A: The season is finished
-        if pending_count == 0:
-            status_map[t] = "✅ QUALIFIED" if possible >= 100.0 else "❌ ELIMINATED"
-
-        # Case B: The season is still ongoing
+        if possible >= 100.0:
+            status_map[t] = "✅ QUALIFIED"
+        elif possible <= 0.0:
+            status_map[t] = "❌ ELIMINATED"
+        elif possible <= 7.5:
+            status_map[t] = "⚠️ E1(Must Win)"
+        elif possible <= 15.0:
+            status_map[t] = "📉 E2(Struggling)"
         else:
-            if possible >= 100.0:
-                status_map[t] = "⭐ SAFE"
-            elif possible <= 0.0:
-                status_map[t] = "❌ OUT"
-            elif possible < 15.0:
-                status_map[t] = "⚠️ E1 (Must Win)"
-            elif possible < 35.0:
-                status_map[t] = "📉 E2"
-            else:
-                status_map[t] = "🏏 In Hunt"
+            status_map[t] = "🏏 In Hunt"
 
     return status_map
 

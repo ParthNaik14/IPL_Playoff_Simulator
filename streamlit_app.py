@@ -498,11 +498,19 @@ def style_points_table(df):
     styled = styled.set_properties(subset=pd.IndexSlice[:4, :], **{"font-weight": "bold"})
     styled = styled.set_properties(**{"text-align": "center"})
 
-    # NEW: Status color coding logic
+    # NEW: Updated Status color coding logic
     def status_color(val):
-        if "SAFE" in str(val): return "color: #00FF00; font-weight: bold;"  # Green
-        if "OUT" in str(val):  return "color: #FF4B4B; font-weight: bold;"  # Red
-        if "E1" in str(val):   return "color: #FFA500; font-weight: bold;"  # Orange
+        val_str = str(val)
+        if "QUALIFIED" in val_str or "SAFE" in val_str:
+            return "color: #00FF00; font-weight: bold;"  # Bright Green
+        if "ELIMINATED" in val_str or "OUT" in val_str:
+            return "color: #FF4B4B; font-weight: bold;"  # Red
+        if "E1" in val_str:
+            return "color: #FF4500; font-weight: bold;"  # Deep Orange/Red-Orange
+        if "E2" in val_str:
+            return "color: #FFA500; font-weight: bold;"  # Warning Orange
+        if "In Hunt" in val_str:
+            return "color: #1E90FF; font-weight: bold;"  # Dodger Blue
         return ""
 
     if "Status" in df.columns:
@@ -547,25 +555,49 @@ def style_elo_table(df):
 
 
 # ============================================================
-# Column explainer
+# Explainers
 # ============================================================
+STATUS_EXPLAINER = """
+### 🏷️ Qualification Status Explained
+The **Status** badge gives you an instant read on a team's playoff survival. It is driven strictly by mathematical possibilities (ignoring team strength or NRR).
+
+* **✅ QUALIFIED:** Mathematically guaranteed to make the Top 4. No combination of remaining results can knock them out.
+* **🏏 In Hunt:** Actively in the playoff race. They survive in more than 15% of all possible future mathematical scenarios.
+* **📉 E2 (Elimination Tier 2):** Struggling. They survive in 15% or less of scenarios. They likely need to win almost all remaining games and get lucky with other results.
+* **⚠️ E1 (Must Win):** On the absolute brink. They survive in 7.5% or less of scenarios. One more loss, or even a rival team winning a separate match, will likely end their season.
+* **❌ ELIMINATED:** Mathematically eliminated. Zero chance of making the playoffs, even if they win their remaining games.
+"""
 COLUMN_EXPLAINER = """
 ### 📖 How to read the simulation results
 
-The simulator runs **10,000 Monte Carlo simulations** of the remaining matches. Each simulation randomly determines winners based on team strength, home advantage, and current form.
+#### 🏷️ Status Badges Explained
+The **Status** column gives you an instant read on a team's playoff survival. It is driven strictly by the **Still Possible %** column (pure mathematical scenarios, ignoring team strength or NRR).
 
-| Column | What it measures | Model used |
-|--------|-----------------|------------|
-| **Qualify %** | % of simulations finishing top 4. Primary qualification metric. NRR breaks points ties. | Elo · Form · Win% · NRR · Home boost |
-| **Top 2 %** | % of simulations finishing top 2 (direct final berth). NRR breaks ties. | Same as Qualify % |
-| **Safe by Points %** | % of simulations where team's final points alone guarantee top 4 — no NRR dependency. Always ≤ Qualify %. | Same as Qualify % · Points-only ranking |
-| **Safe Top 2 %** | Same as Safe by Points %, but for a top 2 finish. | Same as Top 2 % · Points-only ranking |
-| **Still Possible %** | Mathematical top-4 ceiling: pure 50/50 coin-flip per match. Hits 0% when top 4 is mathematically impossible. | Pure 50/50 · Points + proportional tie-splitting |
-| **Top 2 Still Possible %** | Same as Still Possible %, but for top 2. Hits 0% when a direct final berth is mathematically impossible. | Same |
-| **Math Safe by Pts %** | % of 50/50 simulations where team's points alone guarantee top 4 (strictly above 4th-place cutoff). | Pure 50/50 · Points-only strict dominance |
-| **Math Safe Top 2 %** | Same as Math Safe by Pts %, but for top 2 strict dominance. | Pure 50/50 · Points-only strict dominance |
-| **Avg Final Points** | Average points projected across all simulations (rounded to nearest 2). | Same as Qualify % |
-| **Avg Final NRR** | Average final NRR projected across all simulations. Green = positive, red = negative. | Same as Qualify % |
+* **✅ QUALIFIED / ❌ ELIMINATED:** The regular season is over (Match 70), and the final Top 4 is locked.
+* **⭐ SAFE:** Mathematically guaranteed to make the Top 4. No combination of remaining results can knock them out (Still Possible = 100%).
+* **🏏 In Hunt:** Actively in the playoff race. They survive in more than 35% of all possible future mathematical scenarios.
+* **📉 E2 (Elimination Tier 2):** Struggling. They survive in less than 15% of scenarios. They likely need to win all remaining games and get lucky with other results.
+* **⚠️ E1 (Must Win):** On the absolute brink. They survive in less than 7.5% of scenarios. One more loss, or even a rival team winning a separate match, will likely end their season.
+* **❌ OUT:** Mathematically eliminated. Zero chance of making the playoffs, even if they win their remaining games (Still Possible = 0%).
+
+---
+
+The simulator runs **10,000 Monte Carlo simulations** of the remaining matches. Each simulation randomly determines winners based on team strength, home advantage, and current form, then ranks all 10 teams. Here's what each column means:
+
+| Column | What it measures | Parameters used |
+|--------|-----------------|-----------------|
+| **Qualify %** | % of simulations where this team finished in the top 4. The primary qualification metric. Uses NRR to break points ties. | Elo rating · Recent form (last 5 games) · Win % · NRR · Home advantage |
+| **Top 2 %** | % of simulations where this team finished top 2, earning a direct final berth. Uses NRR to break points ties. | Same as Qualify % |
+| **Safe by Points %** | % of simulations where this team accumulated enough wins to finish top 4 **strictly on points alone** — even if NRR went against them. Uses the same strength-weighted win probabilities as Qualify %, but only checks the points standings at the end (NRR ignored for final rank). Will always be ≤ Qualify %. | Same win probability model as Qualify % · Final ranking by points only |
+| **Safe Top 2 %** | Same as Safe by Points %, but for a top 2 finish on points alone. | Same win probability model as Top 2 % · Final ranking by points only |
+| **Still Possible %** | Mathematical ceiling for top 4. If every remaining game is a **pure 50/50 coin flip** regardless of team strength, how often does this team finish top 4? When this hits 0%, top 4 is mathematically impossible. | Equal 50/50 win probability · Points only (no NRR) |
+| **Top 2 Still Possible %** | Same as Still Possible %, but for a top 2 finish. When this hits 0%, a direct final berth is mathematically impossible. | Equal 50/50 win probability · Points only (no NRR) |
+| **Math Safe by Pts %** | % of 50/50 simulations where the team guarantees top 4 strictly on points (dominating the 5th place team). | Pure 50/50 · Points-only strict dominance |
+| **Math Safe Top 2 %** | Same as Math Safe by Pts %, but for top 2 strict dominance (dominating the 3rd place team). | Pure 50/50 · Points-only strict dominance |
+| **Avg Final Points** | Average points this team finishes on across all simulations, rounded to nearest even number. **Most meaningful mid-season** once several matches have been played. | Same as Qualify % |
+| **Avg Final NRR** | Average NRR this team finishes on across all simulations (3 decimal places). Most useful when multiple teams are projected on the same points — NRR decides who qualifies. Green = positive, red = negative. | Same as Qualify % |
+
+> **Win probability model:** Each match probability = `team_strength / (team_strength + opponent_strength)`, where strength is a weighted blend of Elo (45–55%), recent form (0–30%), win % (15%), and NRR (remaining %). Home advantage adds a venue-specific multiplier (1.03–1.08×).
 """
 
 # ============================================================
@@ -573,15 +605,24 @@ The simulator runs **10,000 Monte Carlo simulations** of the remaining matches. 
 # ============================================================
 if st.session_state.simulation_df is not None:
 
+    with st.expander("ℹ️ How to read the Qualification Status", expanded=False):
+        st.markdown(STATUS_EXPLAINER)
+
     # --- Points table ---
     if st.session_state.get("what_if_applied"):
         st.subheader("📋 What-if Points Table (After Applied Matches)")
         whatif_table = sim.get_points_table_after_what_if(what_if_matches)
+        if "Status" in st.session_state.simulation_df.columns:
+            status_dict = dict(zip(st.session_state.simulation_df["Team"], st.session_state.simulation_df["Status"]))
+            whatif_table.insert(1, "Status", whatif_table["Team"].map(status_dict))
         whatif_table.index = range(1, len(whatif_table) + 1)
         st.markdown(style_points_table(whatif_table).to_html(escape=False), unsafe_allow_html=True)
     else:
         st.markdown("### 📌 Current IPL Points Table")
         current_table = pd.DataFrame(sim.get_current_points_table())
+        if "Status" in st.session_state.simulation_df.columns:
+            status_dict = dict(zip(st.session_state.simulation_df["Team"], st.session_state.simulation_df["Status"]))
+            current_table.insert(1, "Status", current_table["Team"].map(status_dict))
         current_table.index = range(1, len(current_table) + 1)
         st.markdown(style_points_table(current_table).to_html(escape=False), unsafe_allow_html=True)
 
@@ -636,7 +677,7 @@ if st.session_state.simulation_df is not None:
         full_df_sorted.index = range(1, len(full_df_sorted) + 1)
 
         # 4. Display only what was selected
-        display_cols = ["Team"] + selected_cols
+        display_cols = ["Team"] + [c for c in selected_cols if c != "Status"]
         # Deduplicate columns just in case
         display_cols = list(dict.fromkeys(display_cols))
 
@@ -760,16 +801,18 @@ if st.session_state.simulation_df is not None:
     with st.expander("📊 Current Team Elo Ratings", expanded=False):
         st.markdown("""
 **How Elo ratings are calculated:**
-
+ 
 Pre-season ratings are seeded from two components blended together:
-- **90% squad quality** — each team's expected XI is rated across four dimensions (batting impact, bowling impact, experience, T20 reputation) on a 0–10 scale. The top 11 players are aggregated with diminishing returns, then normalised across all teams.
-- **10% last season finish** — 2025 final league standings converted to a 0–1 score (1st = 1.0, 10th = 0.0).
-
-The combined score is normalised to a **1485–1515 range** — a deliberately narrow spread reflecting pre-season uncertainty. A 30-point gap translates to roughly a 54–46 win probability per match.
-
+- **90% squad quality** — each team's expected XI is rated across four dimensions (batting impact, bowling impact, experience, T20 reputation) on a 0–10 scale. The top 11 players are aggregated with diminishing returns (12th man contributes less than the 1st), then normalised across all teams.
+- **10% last season finish** — 2025 final league standings converted to a 0–1 score (1st = 1.0, 10th = 0.0), giving a small but meaningful nudge to teams that performed well recently.
+ 
+The combined score is then normalised to a **1485–1515 range** — a deliberately narrow spread reflecting pre-season uncertainty. A 30-point gap between strongest and weakest translates to roughly a 54–46 win probability per match.
+ 
 **After each match**, Elo updates via a margin-aware formula:
+ 
 `new_rating = old_rating + K × (actual_score − expected_score)`
-where K = 32 and actual_score is a smooth function of NRR margin.
+ 
+Where K = 32, expected score is derived from the pre-match Elo gap, and actual score is a smooth function of NRR margin (a big win moves ratings more than a narrow one). This means ratings self-calibrate over the season — form matters more as matches accumulate.
         """)
         elo_df = sim.get_elo_table()
         elo_df.index = range(1, len(elo_df) + 1)
@@ -951,12 +994,18 @@ else:
     with st.expander("📊 Current Team Elo Ratings", expanded=False):
         st.markdown("""
 **How Elo ratings are calculated:**
-
+ 
 Pre-season ratings are seeded from two components blended together:
-- **90% squad quality** — each team's expected XI is rated across four dimensions (batting impact, bowling impact, experience, T20 reputation) on a 0–10 scale.
-- **10% last season finish** — 2025 final league standings converted to a 0–1 score.
-
-Normalised to **1485–1515 range**. After each match, updates via margin-aware Elo with K = 32.
+- **90% squad quality** — each team's expected XI is rated across four dimensions (batting impact, bowling impact, experience, T20 reputation) on a 0–10 scale. The top 11 players are aggregated with diminishing returns (12th man contributes less than the 1st), then normalised across all teams.
+- **10% last season finish** — 2025 final league standings converted to a 0–1 score (1st = 1.0, 10th = 0.0), giving a small but meaningful nudge to teams that performed well recently.
+ 
+The combined score is then normalised to a **1485–1515 range** — a deliberately narrow spread reflecting pre-season uncertainty. A 30-point gap between strongest and weakest translates to roughly a 54–46 win probability per match.
+ 
+**After each match**, Elo updates via a margin-aware formula:
+ 
+`new_rating = old_rating + K × (actual_score − expected_score)`
+ 
+Where K = 32, expected score is derived from the pre-match Elo gap, and actual score is a smooth function of NRR margin (a big win moves ratings more than a narrow one). This means ratings self-calibrate over the season — form matters more as matches accumulate.
         """)
         elo_df = sim.get_elo_table()
         elo_df.index = range(1, len(elo_df) + 1)
