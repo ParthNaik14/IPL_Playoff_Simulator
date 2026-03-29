@@ -803,139 +803,139 @@ where K = 32 and actual_score is a smooth function of NRR margin.
                            file_name=excel_filename,
                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
-        # ============================================================
-        # SECTION 6: The Playoff Bracket (Only appears at Match 70)
-        # ============================================================
-        import numpy as np
+    # ============================================================
+    # SECTION 6: The Playoff Bracket (Only appears at Match 70)
+    # ============================================================
+    import numpy as np
 
-        applied_count = sum(1 for m in what_if_matches if m.get("applied")) if st.session_state.get(
-            "what_if_applied") else 0
+    applied_count = sum(1 for m in what_if_matches if m.get("applied")) if st.session_state.get(
+        "what_if_applied") else 0
 
-        if sim.MATCHES_COMMITTED + applied_count == 70:
-            st.markdown("---")
-
-
-            # --- NEW HELPER: Generates a realistic T20 Scorecard ---
-            def generate_scorecard(winner, loser):
-                winner_bats_first = np.random.rand() > 0.5
-
-                if winner_bats_first:
-                    # Winner sets a target and defends it
-                    w_runs = int(np.random.normal(190, 25))  # Avg score 190
-                    w_wkts = np.random.randint(3, 9)
-
-                    margin = np.random.randint(4, 35)  # Wins by 4 to 35 runs
-                    l_runs = w_runs - margin
-                    l_wkts = np.random.randint(6, 11)  # 10 means all out
-                    l_ov = "20.0" if l_wkts < 10 else f"{np.random.randint(16, 19)}.{np.random.randint(1, 6)}"
-
-                    l_wkts_str = "All Out" if l_wkts == 10 else f"{l_wkts}"
-                    w_wkts_str = f"{w_wkts}"
-
-                    return f"**{winner}** {w_runs}/{w_wkts_str} (20.0) defeated **{loser}** {l_runs}/{l_wkts_str} ({l_ov}) by {margin} runs."
-                else:
-                    # Loser sets a target, Winner chases it down
-                    l_runs = int(np.random.normal(175, 20))
-                    l_wkts = np.random.randint(5, 10)
-
-                    w_runs = l_runs + np.random.randint(1, 6)  # Chase target with a boundary/single
-                    w_wkts = np.random.randint(2, 8)
-                    w_ov = f"{np.random.randint(17, 19)}.{np.random.randint(1, 6)}"  # Winning in the death overs
-
-                    l_wkts_str = "All Out" if l_wkts == 10 else f"{l_wkts}"
-                    wickets_won_by = 10 - w_wkts
-
-                    return f"**{loser}** {l_runs}/{l_wkts_str} (20.0) lost to **{winner}** {w_runs}/{w_wkts} ({w_ov}) by {wickets_won_by} wickets."
+    if sim.MATCHES_COMMITTED + applied_count == 70:
+        st.markdown("---")
 
 
-            # -------------------------------------------------------
+        # --- NEW HELPER: Generates a realistic T20 Scorecard ---
+        def generate_scorecard(winner, loser):
+            winner_bats_first = np.random.rand() > 0.5
 
-            head_col1, head_col2 = st.columns([3, 1])
-            with head_col1:
-                st.header("🏆 IPL 2026 Playoff Bracket")
-            with head_col2:
-                if st.button("🎲 Re-Simulate Playoffs", use_container_width=True):
-                    st.rerun()
+            if winner_bats_first:
+                # Winner sets a target and defends it
+                w_runs = int(np.random.normal(190, 25))  # Avg score 190
+                w_wkts = np.random.randint(3, 9)
 
-            st.balloons()
+                margin = np.random.randint(4, 35)  # Wins by 4 to 35 runs
+                l_runs = w_runs - margin
+                l_wkts = np.random.randint(6, 11)  # 10 means all out
+                l_ov = "20.0" if l_wkts < 10 else f"{np.random.randint(16, 19)}.{np.random.randint(1, 6)}"
 
-            # Safely pull and sort the Top 4 directly from the base simulation data
-            safe_df = st.session_state.simulation_df.sort_values(
-                by=["Avg Final Points", "Avg Final NRR"],
-                ascending=[False, False]
-            )
-            top4 = safe_df['Team'].tolist()[:4]
+                l_wkts_str = "All Out" if l_wkts == 10 else f"{l_wkts}"
+                w_wkts_str = f"{w_wkts}"
 
-            st.markdown(f"**The Elite Four:** 1. {top4[0]} | 2. {top4[1]} | 3. {top4[2]} | 4. {top4[3]}")
+                return f"**{winner}** {w_runs}/{w_wkts_str} (20.0) defeated **{loser}** {l_runs}/{l_wkts_str} ({l_ov}) by {margin} runs."
+            else:
+                # Loser sets a target, Winner chases it down
+                l_runs = int(np.random.normal(175, 20))
+                l_wkts = np.random.randint(5, 10)
 
-            col1, col2 = st.columns(2)
+                w_runs = l_runs + np.random.randint(1, 6)  # Chase target with a boundary/single
+                w_wkts = np.random.randint(2, 8)
+                w_ov = f"{np.random.randint(17, 19)}.{np.random.randint(1, 6)}"  # Winning in the death overs
 
-            # --- QUALIFIER 1 ---
-            with col1:
-                st.subheader("🥇 Qualifier 1")
-                st.info(f"**{top4[0]}** vs **{top4[1]}**")
-                p1, p2 = sim.get_win_probability(top4[0], top4[1], "Neutral")
+                l_wkts_str = "All Out" if l_wkts == 10 else f"{l_wkts}"
+                wickets_won_by = 10 - w_wkts
 
-                roll = np.random.rand()
-                q1_winner = top4[0] if roll < (p1 / 100.0) else top4[1]
-                q1_loser = top4[1] if q1_winner == top4[0] else top4[0]
+                return f"**{loser}** {l_runs}/{l_wkts_str} (20.0) lost to **{winner}** {w_runs}/{w_wkts} ({w_ov}) by {wickets_won_by} wickets."
 
-                upset_tag = "🔥 (Upset!)" if (q1_winner == top4[0] and p1 < 50) or (
-                            q1_winner == top4[1] and p2 < 50) else ""
-                st.write(f"📈 Matchup Odds: {top4[0]} ({p1:.1f}%) | {top4[1]} ({p2:.1f}%)")
-                st.write(f"🏏 **Score:** {generate_scorecard(q1_winner, q1_loser)}")
-                st.markdown(f"*{q1_winner} advances directly to the Final. {upset_tag}*")
 
-            # --- ELIMINATOR ---
-            with col2:
-                st.subheader("🥉 Eliminator")
-                st.warning(f"**{top4[2]}** vs **{top4[3]}**")
-                p3, p4 = sim.get_win_probability(top4[2], top4[3], "Neutral")
+        # -------------------------------------------------------
 
-                roll = np.random.rand()
-                el_winner = top4[2] if roll < (p3 / 100.0) else top4[3]
+        head_col1, head_col2 = st.columns([3, 1])
+        with head_col1:
+            st.header("🏆 IPL 2026 Playoff Bracket")
+        with head_col2:
+            if st.button("🎲 Re-Simulate Playoffs", use_container_width=True):
+                st.rerun()
 
-                upset_tag = "🔥 (Upset!)" if (el_winner == top4[2] and p3 < 50) or (
-                            el_winner == top4[3] and p4 < 50) else ""
-                st.write(f"📈 Matchup Odds: {top4[2]} ({p3:.1f}%) | {top4[3]} ({p4:.1f}%)")
-                st.write(f"🏏 **Score:** {generate_scorecard(el_winner, top4[2] if el_winner == top4[3] else top4[3])}")
-                st.markdown(f"*{el_winner} survives and moves to Qualifier 2. {upset_tag}*")
+        st.balloons()
 
-            st.markdown("---")
+        # Safely pull and sort the Top 4 directly from the base simulation data
+        safe_df = st.session_state.simulation_df.sort_values(
+            by=["Avg Final Points", "Avg Final NRR"],
+            ascending=[False, False]
+        )
+        top4 = safe_df['Team'].tolist()[:4]
 
-            col3, col4 = st.columns(2)
+        st.markdown(f"**The Elite Four:** 1. {top4[0]} | 2. {top4[1]} | 3. {top4[2]} | 4. {top4[3]}")
 
-            # --- QUALIFIER 2 ---
-            with col3:
-                st.subheader("🥈 Qualifier 2")
-                st.info(f"**{q1_loser}** vs **{el_winner}**")
-                p_q2_1, p_q2_2 = sim.get_win_probability(q1_loser, el_winner, "Neutral")
+        col1, col2 = st.columns(2)
 
-                roll = np.random.rand()
-                q2_winner = q1_loser if roll < (p_q2_1 / 100.0) else el_winner
+        # --- QUALIFIER 1 ---
+        with col1:
+            st.subheader("🥇 Qualifier 1")
+            st.info(f"**{top4[0]}** vs **{top4[1]}**")
+            p1, p2 = sim.get_win_probability(top4[0], top4[1], "Neutral")
 
-                upset_tag = "🔥 (Upset!)" if (q2_winner == q1_loser and p_q2_1 < 50) or (
-                            q2_winner == el_winner and p_q2_2 < 50) else ""
-                st.write(f"📈 Matchup Odds: {q1_loser} ({p_q2_1:.1f}%) | {el_winner} ({p_q2_2:.1f}%)")
-                st.write(
-                    f"🏏 **Score:** {generate_scorecard(q2_winner, q1_loser if q2_winner == el_winner else el_winner)}")
-                st.markdown(f"*{q2_winner} books the final ticket. {upset_tag}*")
+            roll = np.random.rand()
+            q1_winner = top4[0] if roll < (p1 / 100.0) else top4[1]
+            q1_loser = top4[1] if q1_winner == top4[0] else top4[0]
 
-            # --- THE FINAL ---
-            with col4:
-                st.subheader("🏆 The Grand Final")
-                st.success(f"**{q1_winner}** vs **{q2_winner}**")
-                p_f1, p_f2 = sim.get_win_probability(q1_winner, q2_winner, "Neutral")
+            upset_tag = "🔥 (Upset!)" if (q1_winner == top4[0] and p1 < 50) or (
+                        q1_winner == top4[1] and p2 < 50) else ""
+            st.write(f"📈 Matchup Odds: {top4[0]} ({p1:.1f}%) | {top4[1]} ({p2:.1f}%)")
+            st.write(f"🏏 **Score:** {generate_scorecard(q1_winner, q1_loser)}")
+            st.markdown(f"*{q1_winner} advances directly to the Final. {upset_tag}*")
 
-                roll = np.random.rand()
-                champion = q1_winner if roll < (p_f1 / 100.0) else q2_winner
-                runner_up = q1_winner if champion == q2_winner else q2_winner
+        # --- ELIMINATOR ---
+        with col2:
+            st.subheader("🥉 Eliminator")
+            st.warning(f"**{top4[2]}** vs **{top4[3]}**")
+            p3, p4 = sim.get_win_probability(top4[2], top4[3], "Neutral")
 
-                st.write(f"📈 Matchup Odds: {q1_winner} ({p_f1:.1f}%) | {q2_winner} ({p_f2:.1f}%)")
-                st.write(f"🏏 **Score:** {generate_scorecard(champion, runner_up)}")
+            roll = np.random.rand()
+            el_winner = top4[2] if roll < (p3 / 100.0) else top4[3]
 
-            st.markdown(f"<h2 style='text-align: center; color: gold;'>👑 Projected Champion: {champion} 👑</h2>",
-                        unsafe_allow_html=True)
+            upset_tag = "🔥 (Upset!)" if (el_winner == top4[2] and p3 < 50) or (
+                        el_winner == top4[3] and p4 < 50) else ""
+            st.write(f"📈 Matchup Odds: {top4[2]} ({p3:.1f}%) | {top4[3]} ({p4:.1f}%)")
+            st.write(f"🏏 **Score:** {generate_scorecard(el_winner, top4[2] if el_winner == top4[3] else top4[3])}")
+            st.markdown(f"*{el_winner} survives and moves to Qualifier 2. {upset_tag}*")
+
+        st.markdown("---")
+
+        col3, col4 = st.columns(2)
+
+        # --- QUALIFIER 2 ---
+        with col3:
+            st.subheader("🥈 Qualifier 2")
+            st.info(f"**{q1_loser}** vs **{el_winner}**")
+            p_q2_1, p_q2_2 = sim.get_win_probability(q1_loser, el_winner, "Neutral")
+
+            roll = np.random.rand()
+            q2_winner = q1_loser if roll < (p_q2_1 / 100.0) else el_winner
+
+            upset_tag = "🔥 (Upset!)" if (q2_winner == q1_loser and p_q2_1 < 50) or (
+                        q2_winner == el_winner and p_q2_2 < 50) else ""
+            st.write(f"📈 Matchup Odds: {q1_loser} ({p_q2_1:.1f}%) | {el_winner} ({p_q2_2:.1f}%)")
+            st.write(
+                f"🏏 **Score:** {generate_scorecard(q2_winner, q1_loser if q2_winner == el_winner else el_winner)}")
+            st.markdown(f"*{q2_winner} books the final ticket. {upset_tag}*")
+
+        # --- THE FINAL ---
+        with col4:
+            st.subheader("🏆 The Grand Final")
+            st.success(f"**{q1_winner}** vs **{q2_winner}**")
+            p_f1, p_f2 = sim.get_win_probability(q1_winner, q2_winner, "Neutral")
+
+            roll = np.random.rand()
+            champion = q1_winner if roll < (p_f1 / 100.0) else q2_winner
+            runner_up = q1_winner if champion == q2_winner else q2_winner
+
+            st.write(f"📈 Matchup Odds: {q1_winner} ({p_f1:.1f}%) | {q2_winner} ({p_f2:.1f}%)")
+            st.write(f"🏏 **Score:** {generate_scorecard(champion, runner_up)}")
+
+        st.markdown(f"<h2 style='text-align: center; color: gold;'>👑 Projected Champion: {champion} 👑</h2>",
+                    unsafe_allow_html=True)
 
 # ============================================================
 # PRE-SIMULATION VIEW
