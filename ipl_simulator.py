@@ -38,8 +38,8 @@ updated_points_data = {
     "Kolkata Knight Riders": {"points": 0, "matches": 1, "runs_for": 220, "overs_faced": "20.0", "runs_against": 224, "overs_bowled": "19.1"},
     "Lucknow Super Giants": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
     "Sunrisers Hyderabad": {"points": 0, "matches": 1, "runs_for": 201, "overs_faced": "20.0", "runs_against": 203, "overs_bowled": "15.4"},
-    "Rajasthan Royals": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
-    "Chennai Super Kings": {"points": 0, "matches": 0, "runs_for": 0, "overs_faced": "0.0", "runs_against": 0, "overs_bowled": "0.0"},
+    "Rajasthan Royals": {"points": 2, "matches": 1, "runs_for": 128, "overs_faced": "12.1", "runs_against": 127, "overs_bowled": "20.0"},
+    "Chennai Super Kings": {"points": 0, "matches": 1, "runs_for": 127, "overs_faced": "20.0", "runs_against": 128, "overs_bowled": "12.1"},
 }
 
 # ---------------------------------------------------------------------------
@@ -52,10 +52,10 @@ elo_ratings = {
     "Punjab Kings":                          1506.5,
     "Lucknow Super Giants":                  1502.2,
     "Kolkata Knight Riders":                 1484.45,
-    "Rajasthan Royals":                      1495.3,
+    "Rajasthan Royals":                      1510.83,
     "Sunrisers Hyderabad":                   1476.91,
     "Delhi Capitals":                        1488.6,
-    "Chennai Super Kings":                   1485.0,
+    "Chennai Super Kings":                   1469.47,
 }
 
 ELO_K = 32
@@ -69,8 +69,8 @@ recent_form = {
     "Delhi Capitals":                        [],
     "Lucknow Super Giants":                  [],
     "Sunrisers Hyderabad":                   [0],
-    "Rajasthan Royals":                      [],
-    "Chennai Super Kings":                   [],
+    "Rajasthan Royals":                      [1],
+    "Chennai Super Kings":                   [0],
 }
 
 FORM_WEIGHTS = [0.10, 0.15, 0.20, 0.25, 0.30]
@@ -113,7 +113,6 @@ def get_home_boost(venue):
 # IPL 2026 Schedule — Full 70 matches
 # ---------------------------------------------------------------------------
 remaining_matches = [
-    {"home": "Rajasthan Royals",            "away": "Chennai Super Kings",         "venue": "Guwahati",        "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings",                "away": "Gujarat Titans",              "venue": "New Chandigarh",  "result": None, "margin": None, "applied": False},
     {"home": "Lucknow Super Giants",        "away": "Delhi Capitals",              "venue": "Lucknow",         "result": None, "margin": None, "applied": False},
     {"home": "Kolkata Knight Riders",       "away": "Sunrisers Hyderabad",         "venue": "Kolkata",         "result": None, "margin": None, "applied": False},
@@ -184,12 +183,12 @@ remaining_matches = [
 ]
 
 TOTAL_MATCHES = 70
-MATCHES_COMMITTED = 2
+MATCHES_COMMITTED = 3
 
 # ---------------------------------------------------------------------------
 # Committed results log
 # ---------------------------------------------------------------------------
-committed_results = [{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 203, "winner_overs_str": "15.4", "loser_runs": 201, "loser_overs_str": "20.0", "elo_before": {"Royal Challengers Bengaluru": 1509.8, "Sunrisers Hyderabad": 1492.1}, "form_before": {"Royal Challengers Bengaluru": [], "Sunrisers Hyderabad": []}}, {"home": "Mumbai Indians", "away": "Kolkata Knight Riders", "venue": "Mumbai", "winner": "Mumbai Indians", "abandoned": False, "winner_runs": 224, "winner_overs_str": "19.1", "loser_runs": 220, "loser_overs_str": "20.0", "elo_before": {"Mumbai Indians": 1515.0, "Kolkata Knight Riders": 1498.7}, "form_before": {"Mumbai Indians": [], "Kolkata Knight Riders": []}}]  # END_COMMITTED_RESULTS
+committed_results = [{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 203, "winner_overs_str": "15.4", "loser_runs": 201, "loser_overs_str": "20.0", "elo_before": {"Royal Challengers Bengaluru": 1509.8, "Sunrisers Hyderabad": 1492.1}, "form_before": {"Royal Challengers Bengaluru": [], "Sunrisers Hyderabad": []}}, {"home": "Mumbai Indians", "away": "Kolkata Knight Riders", "venue": "Mumbai", "winner": "Mumbai Indians", "abandoned": False, "winner_runs": 224, "winner_overs_str": "19.1", "loser_runs": 220, "loser_overs_str": "20.0", "elo_before": {"Mumbai Indians": 1515.0, "Kolkata Knight Riders": 1498.7}, "form_before": {"Mumbai Indians": [], "Kolkata Knight Riders": []}}, {"home": "Rajasthan Royals", "away": "Chennai Super Kings", "venue": "Guwahati", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 128, "winner_overs_str": "12.1", "loser_runs": 127, "loser_overs_str": "20.0", "elo_before": {"Rajasthan Royals": 1495.3, "Chennai Super Kings": 1485.0}, "form_before": {"Rajasthan Royals": [], "Chennai Super Kings": []}}]  # END_COMMITTED_RESULTS
 
 
 # ---------------------------------------------------------------------------
