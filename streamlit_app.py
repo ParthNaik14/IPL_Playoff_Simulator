@@ -85,7 +85,7 @@ def _clear_whatif_state():
 
 # --- Randomisation callbacks updated for versioned keys ---
 def randomize_single_callback(idx, m_home, m_away, m_venue):
-    sc = sim.generate_random_scorecard(m_home, m_away, m_venue)
+    sc = sim.generate_constrained_scorecard(m_home, m_away, m_venue)
     rid = st.session_state.reset_id
     st.session_state[f"whatif_result_{idx}_{rid}"] = sc["winner"]
     st.session_state[f"winner_runs_{idx}_{rid}"] = sc["winner_runs"]
@@ -97,7 +97,7 @@ def randomize_single_callback(idx, m_home, m_away, m_venue):
 def randomize_all_callback():
     rid = st.session_state.reset_id
     for idx, match in enumerate(sim.remaining_matches):
-        sc = sim.generate_random_scorecard(match["home"], match["away"], match["venue"])
+        sc = sim.generate_constrained_scorecard(match["home"], match["away"], match["venue"])
         st.session_state[f"whatif_result_{idx}_{rid}"] = sc["winner"]
         st.session_state[f"winner_runs_{idx}_{rid}"] = sc["winner_runs"]
         st.session_state[f"winner_overs_{idx}_{rid}"] = sc["winner_overs"]

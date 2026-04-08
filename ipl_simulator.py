@@ -33,8 +33,8 @@ updated_points_data = {
     "Royal Challengers Bengaluru": {"points": 4, "matches": 2, "runs_for": 453, "overs_faced": "35.4", "runs_against": 408, "overs_bowled": "40.0"},
     "Punjab Kings": {"points": 5, "matches": 3, "runs_for": 375, "overs_faced": "37.5", "runs_against": 371, "overs_bowled": "40.0"},
     "Mumbai Indians": {"points": 2, "matches": 3, "runs_for": 509, "overs_faced": "50.1", "runs_against": 534, "overs_bowled": "49.1"},
-    "Gujarat Titans": {"points": 0, "matches": 2, "runs_for": 366, "overs_faced": "40.0", "runs_against": 375, "overs_bowled": "39.1"},
-    "Delhi Capitals": {"points": 4, "matches": 2, "runs_for": 309, "overs_faced": "35.2", "runs_against": 303, "overs_bowled": "40.0"},
+    "Gujarat Titans": {"points": 2, "matches": 3, "runs_for": 576, "overs_faced": "60.0", "runs_against": 584, "overs_bowled": "59.1"},
+    "Delhi Capitals": {"points": 4, "matches": 3, "runs_for": 518, "overs_faced": "55.2", "runs_against": 513, "overs_bowled": "60.0"},
     "Kolkata Knight Riders": {"points": 1, "matches": 3, "runs_for": 381, "overs_faced": "40.0", "runs_against": 450, "overs_bowled": "39.1"},
     "Lucknow Super Giants": {"points": 2, "matches": 2, "runs_for": 301, "overs_faced": "39.5", "runs_against": 301, "overs_bowled": "37.1"},
     "Sunrisers Hyderabad": {"points": 2, "matches": 3, "runs_for": 583, "overs_faced": "60.0", "runs_against": 524, "overs_bowled": "55.3"},
@@ -47,14 +47,14 @@ updated_points_data = {
 # ---------------------------------------------------------------------------
 elo_ratings = {
     "Mumbai Indians":                        1496.82,
-    "Gujarat Titans":                        1488.87,
+    "Gujarat Titans":                        1492.38,
     "Royal Challengers Bengaluru":           1537.87,
     "Punjab Kings":                          1533.53,
     "Lucknow Super Giants":                  1495.29,
     "Kolkata Knight Riders":                 1468.1,
     "Rajasthan Royals":                      1536.05,
     "Sunrisers Hyderabad":                   1483.57,
-    "Delhi Capitals":                        1522.0,
+    "Delhi Capitals":                        1518.49,
     "Chennai Super Kings":                   1443.5,
 }
 
@@ -62,11 +62,11 @@ ELO_K = 32
 
 recent_form = {
     "Royal Challengers Bengaluru":           [1, 1],
-    "Gujarat Titans":                        [0, 0],
+    "Gujarat Titans":                        [0, 0, 1],
     "Mumbai Indians":                        [1, 0, 0],
     "Punjab Kings":                          [1, 1],
     "Kolkata Knight Riders":                 [0, 0],
-    "Delhi Capitals":                        [1, 1],
+    "Delhi Capitals":                        [1, 1, 0],
     "Lucknow Super Giants":                  [0, 1],
     "Sunrisers Hyderabad":                   [0, 1, 0],
     "Rajasthan Royals":                      [1, 1, 1],
@@ -113,7 +113,6 @@ def get_home_boost(venue):
 # IPL 2026 Schedule — Full 70 matches
 # ---------------------------------------------------------------------------
 remaining_matches = [
-    {"home": "Delhi Capitals",              "away": "Gujarat Titans",              "venue": "Delhi",           "result": None, "margin": None, "applied": False},
     {"home": "Kolkata Knight Riders",       "away": "Lucknow Super Giants",        "venue": "Kolkata",         "result": None, "margin": None, "applied": False},
     {"home": "Rajasthan Royals",            "away": "Royal Challengers Bengaluru", "venue": "Guwahati",        "result": None, "margin": None, "applied": False},
     {"home": "Punjab Kings",                "away": "Sunrisers Hyderabad",         "venue": "New Chandigarh",  "result": None, "margin": None, "applied": False},
@@ -173,12 +172,12 @@ remaining_matches = [
 ]
 
 TOTAL_MATCHES = 70
-MATCHES_COMMITTED = 13
+MATCHES_COMMITTED = 14
 
 # ---------------------------------------------------------------------------
 # Committed results log
 # ---------------------------------------------------------------------------
-committed_results = [{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 203, "winner_overs_str": "15.4", "loser_runs": 201, "loser_overs_str": "20.0", "elo_before": {"Royal Challengers Bengaluru": 1509.8, "Sunrisers Hyderabad": 1492.1}, "form_before": {"Royal Challengers Bengaluru": [], "Sunrisers Hyderabad": []}}, {"home": "Mumbai Indians", "away": "Kolkata Knight Riders", "venue": "Mumbai", "winner": "Mumbai Indians", "abandoned": False, "winner_runs": 224, "winner_overs_str": "19.1", "loser_runs": 220, "loser_overs_str": "20.0", "elo_before": {"Mumbai Indians": 1515.0, "Kolkata Knight Riders": 1498.7}, "form_before": {"Mumbai Indians": [], "Kolkata Knight Riders": []}}, {"home": "Rajasthan Royals", "away": "Chennai Super Kings", "venue": "Guwahati", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 128, "winner_overs_str": "12.1", "loser_runs": 127, "loser_overs_str": "20.0", "elo_before": {"Rajasthan Royals": 1495.3, "Chennai Super Kings": 1485.0}, "form_before": {"Rajasthan Royals": [], "Chennai Super Kings": []}}, {"home": "Punjab Kings", "away": "Gujarat Titans", "venue": "New Chandigarh", "winner": "Punjab Kings", "abandoned": False, "winner_runs": 165, "winner_overs_str": "19.1", "loser_runs": 162, "loser_overs_str": "20", "elo_before": {"Punjab Kings": 1506.5, "Gujarat Titans": 1512.4}, "form_before": {"Punjab Kings": [], "Gujarat Titans": []}}, {"home": "Lucknow Super Giants", "away": "Delhi Capitals", "venue": "Lucknow", "winner": "Delhi Capitals", "abandoned": False, "winner_runs": 145, "winner_overs_str": "17.1", "loser_runs": 141, "loser_overs_str": "20", "elo_before": {"Lucknow Super Giants": 1502.2, "Delhi Capitals": 1488.6}, "form_before": {"Lucknow Super Giants": [], "Delhi Capitals": []}}, {"home": "Kolkata Knight Riders", "away": "Sunrisers Hyderabad", "venue": "Kolkata", "winner": "Sunrisers Hyderabad", "abandoned": False, "winner_runs": 226, "winner_overs_str": "20", "loser_runs": 161, "loser_overs_str": "20", "elo_before": {"Kolkata Knight Riders": 1484.45, "Sunrisers Hyderabad": 1476.91}, "form_before": {"Kolkata Knight Riders": [0], "Sunrisers Hyderabad": [0]}}, {"home": "Chennai Super Kings", "away": "Punjab Kings", "venue": "Chennai", "winner": "Punjab Kings", "abandoned": False, "winner_runs": 210, "winner_overs_str": "18.4", "loser_runs": 209, "loser_overs_str": "20", "elo_before": {"Chennai Super Kings": 1469.47, "Punjab Kings": 1520.44}, "form_before": {"Chennai Super Kings": [0], "Punjab Kings": [1]}}, {"home": "Delhi Capitals", "away": "Mumbai Indians", "venue": "Delhi", "winner": "Delhi Capitals", "abandoned": False, "winner_runs": 164, "winner_overs_str": "18.1", "loser_runs": 162, "loser_overs_str": "20", "elo_before": {"Delhi Capitals": 1505.2, "Mumbai Indians": 1529.25}, "form_before": {"Delhi Capitals": [1], "Mumbai Indians": [1]}}, {"home": "Gujarat Titans", "away": "Rajasthan Royals", "venue": "Ahmedabad", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 210, "winner_overs_str": "20", "loser_runs": 204, "loser_overs_str": "20", "elo_before": {"Gujarat Titans": 1498.46, "Rajasthan Royals": 1510.83}, "form_before": {"Gujarat Titans": [0], "Rajasthan Royals": [1]}}, {"home": "Sunrisers Hyderabad", "away": "Lucknow Super Giants", "venue": "Hyderabad", "winner": "Lucknow Super Giants", "abandoned": False, "winner_runs": 160, "winner_overs_str": "19.5", "loser_runs": 156, "loser_overs_str": "20", "elo_before": {"Sunrisers Hyderabad": 1493.26, "Lucknow Super Giants": 1485.6}, "form_before": {"Sunrisers Hyderabad": [0, 1], "Lucknow Super Giants": [0]}}, {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 250, "winner_overs_str": "20", "loser_runs": 207, "loser_overs_str": "20", "elo_before": {"Royal Challengers Bengaluru": 1524.99, "Chennai Super Kings": 1456.38}, "form_before": {"Royal Challengers Bengaluru": [1], "Chennai Super Kings": [0, 0]}}, {"home": "Kolkata Knight Riders", "away": "Punjab Kings", "venue": "Kolkata", "winner": None, "abandoned": True, "winner_runs": 0, "winner_overs_str": "0.0", "loser_runs": 0, "loser_overs_str": "0.0", "elo_before": {"Kolkata Knight Riders": 1468.1, "Punjab Kings": 1533.53}, "form_before": {"Kolkata Knight Riders": [0, 0], "Punjab Kings": [1, 1]}}, {"home": "Rajasthan Royals", "away": "Mumbai Indians", "venue": "Guwahati", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 150, "winner_overs_str": "11", "loser_runs": 123, "loser_overs_str": "11", "elo_before": {"Rajasthan Royals": 1520.42, "Mumbai Indians": 1512.45}, "form_before": {"Rajasthan Royals": [1, 1], "Mumbai Indians": [1, 0]}}]  # END_COMMITTED_RESULTS
+committed_results = [{"home": "Royal Challengers Bengaluru", "away": "Sunrisers Hyderabad", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 203, "winner_overs_str": "15.4", "loser_runs": 201, "loser_overs_str": "20.0", "elo_before": {"Royal Challengers Bengaluru": 1509.8, "Sunrisers Hyderabad": 1492.1}, "form_before": {"Royal Challengers Bengaluru": [], "Sunrisers Hyderabad": []}}, {"home": "Mumbai Indians", "away": "Kolkata Knight Riders", "venue": "Mumbai", "winner": "Mumbai Indians", "abandoned": False, "winner_runs": 224, "winner_overs_str": "19.1", "loser_runs": 220, "loser_overs_str": "20.0", "elo_before": {"Mumbai Indians": 1515.0, "Kolkata Knight Riders": 1498.7}, "form_before": {"Mumbai Indians": [], "Kolkata Knight Riders": []}}, {"home": "Rajasthan Royals", "away": "Chennai Super Kings", "venue": "Guwahati", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 128, "winner_overs_str": "12.1", "loser_runs": 127, "loser_overs_str": "20.0", "elo_before": {"Rajasthan Royals": 1495.3, "Chennai Super Kings": 1485.0}, "form_before": {"Rajasthan Royals": [], "Chennai Super Kings": []}}, {"home": "Punjab Kings", "away": "Gujarat Titans", "venue": "New Chandigarh", "winner": "Punjab Kings", "abandoned": False, "winner_runs": 165, "winner_overs_str": "19.1", "loser_runs": 162, "loser_overs_str": "20", "elo_before": {"Punjab Kings": 1506.5, "Gujarat Titans": 1512.4}, "form_before": {"Punjab Kings": [], "Gujarat Titans": []}}, {"home": "Lucknow Super Giants", "away": "Delhi Capitals", "venue": "Lucknow", "winner": "Delhi Capitals", "abandoned": False, "winner_runs": 145, "winner_overs_str": "17.1", "loser_runs": 141, "loser_overs_str": "20", "elo_before": {"Lucknow Super Giants": 1502.2, "Delhi Capitals": 1488.6}, "form_before": {"Lucknow Super Giants": [], "Delhi Capitals": []}}, {"home": "Kolkata Knight Riders", "away": "Sunrisers Hyderabad", "venue": "Kolkata", "winner": "Sunrisers Hyderabad", "abandoned": False, "winner_runs": 226, "winner_overs_str": "20", "loser_runs": 161, "loser_overs_str": "20", "elo_before": {"Kolkata Knight Riders": 1484.45, "Sunrisers Hyderabad": 1476.91}, "form_before": {"Kolkata Knight Riders": [0], "Sunrisers Hyderabad": [0]}}, {"home": "Chennai Super Kings", "away": "Punjab Kings", "venue": "Chennai", "winner": "Punjab Kings", "abandoned": False, "winner_runs": 210, "winner_overs_str": "18.4", "loser_runs": 209, "loser_overs_str": "20", "elo_before": {"Chennai Super Kings": 1469.47, "Punjab Kings": 1520.44}, "form_before": {"Chennai Super Kings": [0], "Punjab Kings": [1]}}, {"home": "Delhi Capitals", "away": "Mumbai Indians", "venue": "Delhi", "winner": "Delhi Capitals", "abandoned": False, "winner_runs": 164, "winner_overs_str": "18.1", "loser_runs": 162, "loser_overs_str": "20", "elo_before": {"Delhi Capitals": 1505.2, "Mumbai Indians": 1529.25}, "form_before": {"Delhi Capitals": [1], "Mumbai Indians": [1]}}, {"home": "Gujarat Titans", "away": "Rajasthan Royals", "venue": "Ahmedabad", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 210, "winner_overs_str": "20", "loser_runs": 204, "loser_overs_str": "20", "elo_before": {"Gujarat Titans": 1498.46, "Rajasthan Royals": 1510.83}, "form_before": {"Gujarat Titans": [0], "Rajasthan Royals": [1]}}, {"home": "Sunrisers Hyderabad", "away": "Lucknow Super Giants", "venue": "Hyderabad", "winner": "Lucknow Super Giants", "abandoned": False, "winner_runs": 160, "winner_overs_str": "19.5", "loser_runs": 156, "loser_overs_str": "20", "elo_before": {"Sunrisers Hyderabad": 1493.26, "Lucknow Super Giants": 1485.6}, "form_before": {"Sunrisers Hyderabad": [0, 1], "Lucknow Super Giants": [0]}}, {"home": "Royal Challengers Bengaluru", "away": "Chennai Super Kings", "venue": "Bengaluru", "winner": "Royal Challengers Bengaluru", "abandoned": False, "winner_runs": 250, "winner_overs_str": "20", "loser_runs": 207, "loser_overs_str": "20", "elo_before": {"Royal Challengers Bengaluru": 1524.99, "Chennai Super Kings": 1456.38}, "form_before": {"Royal Challengers Bengaluru": [1], "Chennai Super Kings": [0, 0]}}, {"home": "Kolkata Knight Riders", "away": "Punjab Kings", "venue": "Kolkata", "winner": None, "abandoned": True, "winner_runs": 0, "winner_overs_str": "0.0", "loser_runs": 0, "loser_overs_str": "0.0", "elo_before": {"Kolkata Knight Riders": 1468.1, "Punjab Kings": 1533.53}, "form_before": {"Kolkata Knight Riders": [0, 0], "Punjab Kings": [1, 1]}}, {"home": "Rajasthan Royals", "away": "Mumbai Indians", "venue": "Guwahati", "winner": "Rajasthan Royals", "abandoned": False, "winner_runs": 150, "winner_overs_str": "11", "loser_runs": 123, "loser_overs_str": "11", "elo_before": {"Rajasthan Royals": 1520.42, "Mumbai Indians": 1512.45}, "form_before": {"Rajasthan Royals": [1, 1], "Mumbai Indians": [1, 0]}}, {"home": "Delhi Capitals", "away": "Gujarat Titans", "venue": "Delhi", "winner": "Gujarat Titans", "abandoned": False, "winner_runs": 210, "winner_overs_str": "20", "loser_runs": 209, "loser_overs_str": "20", "elo_before": {"Delhi Capitals": 1522.0, "Gujarat Titans": 1488.87}, "form_before": {"Delhi Capitals": [1, 1], "Gujarat Titans": [0, 0]}}]  # END_COMMITTED_RESULTS
 
 
 # ---------------------------------------------------------------------------
@@ -535,9 +534,56 @@ def _build_match_probs(pending):
 
 
 # ---------------------------------------------------------------------------
-# Random scorecard generator
+# generate_random_scorecard — RETIRED, replaced by generate_constrained_scorecard
+# (loser overs were not always 20; winner margin was not capped at 0–6 runs)
 # ---------------------------------------------------------------------------
-def generate_random_scorecard(home, away, venue):
+# def generate_random_scorecard(home, away, venue):
+#     home_p, away_p = get_win_probability(home, away, venue)
+#     winner = home if np.random.rand() < home_p / 100 else away
+#     loser = away if winner == home else home
+#
+#     first_innings_runs = int(np.clip(np.random.normal(185, 30), 66, 287))
+#     chase_won = np.random.rand() < 0.52
+#
+#     if chase_won:
+#         loser_runs = first_innings_runs
+#         loser_overs = "20.0"
+#         if np.random.rand() < 0.40:
+#             balls_remaining = np.random.randint(1, 18)
+#             total_balls = 120 - balls_remaining
+#             winner_overs = f"{total_balls // 6}.{total_balls % 6}"
+#         else:
+#             winner_overs = "20.0"
+#         winner_runs = loser_runs + np.random.randint(1, 8)
+#         winner_runs = loser_runs + np.random.randint(0, 5)
+#     else:
+#         winner_runs = first_innings_runs
+#         winner_overs = "20.0"
+#         if np.random.rand() < 0.35:
+#             balls = np.random.randint(90, 119)
+#             loser_overs = f"{balls // 6}.{balls % 6}"
+#         else:
+#             loser_overs = "20.0"
+#         loser_runs = winner_runs - np.random.randint(5, 51)
+#         loser_runs = max(loser_runs, 80)
+#
+#     return {
+#         "winner": winner,
+#         "loser": loser,
+#         "winner_runs": int(winner_runs),
+#         "winner_overs": winner_overs,
+#         "loser_runs": int(loser_runs),
+#         "loser_overs": loser_overs,
+#     }
+
+
+# ---------------------------------------------------------------------------
+# Constrained scorecard — used by God Mode, Pathfinder & Randomise All
+#   · Loser always plays full 20 overs
+#   · Winner beats loser by exactly 0–6 runs
+#   · Winner's overs & loser's runs follow the same distribution as above
+# ---------------------------------------------------------------------------
+def generate_constrained_scorecard(home, away, venue):
     home_p, away_p = get_win_probability(home, away, venue)
     winner = home if np.random.rand() < home_p / 100 else away
     loser = away if winner == home else home
@@ -545,26 +591,32 @@ def generate_random_scorecard(home, away, venue):
     first_innings_runs = int(np.clip(np.random.normal(185, 30), 66, 287))
     chase_won = np.random.rand() < 0.52
 
+    # FIX: Loser ALWAYS counts as 20.0 overs for accurate NRR penalty
+    loser_overs = "20.0"
+
     if chase_won:
+        # WINNER BATS SECOND (The Run Chase)
         loser_runs = first_innings_runs
-        loser_overs = "20.0"
-        if np.random.rand() < 0.40:
-            balls_remaining = np.random.randint(1, 18)
-            total_balls = 120 - balls_remaining
-            winner_overs = f"{total_balls // 6}.{total_balls % 6}"
-        else:
+        run_diff = np.random.randint(0, 7)
+        winner_runs = loser_runs + run_diff
+        
+        if run_diff == 0:
+            # FIX: If it is a tie/Super Over, the chasing team MUST have used all 20 overs
             winner_overs = "20.0"
-        winner_runs = loser_runs + np.random.randint(1, 8)
-        winner_runs = loser_runs + np.random.randint(0, 5)
-    else:
-        winner_runs = first_innings_runs
-        winner_overs = "20.0"
-        if np.random.rand() < 0.35:
-            balls = np.random.randint(90, 119)
-            loser_overs = f"{balls // 6}.{balls % 6}"
         else:
-            loser_overs = "20.0"
-        loser_runs = winner_runs - np.random.randint(5, 51)
+            if np.random.rand() < 0.40:
+                balls_remaining = np.random.randint(1, 18)
+                total_balls = 120 - balls_remaining
+                winner_overs = f"{total_balls // 6}.{total_balls % 6}"
+            else:
+                winner_overs = "20.0"
+            
+    else:
+        # WINNER BATS FIRST (Defending a total)
+        winner_runs = first_innings_runs
+        winner_overs = "20.0" 
+            
+        loser_runs = winner_runs - np.random.randint(0, 51)
         loser_runs = max(loser_runs, 80)
 
     return {
@@ -575,6 +627,9 @@ def generate_random_scorecard(home, away, venue):
         "loser_runs": int(loser_runs),
         "loser_overs": loser_overs,
     }
+
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -998,14 +1053,12 @@ def generate_forced_scenario(forced_top4, max_attempts=200_000, override_matches
             else:
                 actual_p = prob
 
-            # REUSING YOUR MAIN LOGIC:
-            sc = generate_random_scorecard(h, a, venue)
+            # Use constrained scorecard: loser always 20 overs, winner wins by 0–6 runs
+            sc = generate_constrained_scorecard(h, a, venue)
             # Override winner based on loaded dice
             winner = h if np.random.rand() < actual_p else a
             loser = a if winner == h else h
 
-            # Extract scores from your scorecard generator
-            # (Logic ensures winner always has more runs)
             wr, lr = sc["winner_runs"], sc["loser_runs"]
             wo, lo = sc["winner_overs"], sc["loser_overs"]
 
@@ -1053,13 +1106,27 @@ def generate_single_team_route(target_team, target_rank, max_attempts=100_000):
                 actual_p = prob
 
             winner = h if np.random.rand() < actual_p else a
-            sc = generate_random_scorecard(h, a, venue)
+            loser = a if winner == h else h
+            
+            sc = generate_constrained_scorecard(h, a, venue)
+            
+            wr, lr = sc["winner_runs"], sc["loser_runs"]
+            wo, lo = sc["winner_overs"], sc["loser_overs"]
 
+            # FIX: Properly applying runs and overs for NRR tracking
             td[winner]["points"] += 2
-            # Add NRR tracking here similar to the block above...
+            td[winner]["runs_for"] += wr
+            td[winner]["overs_faced"] += overs_to_float(wo)
+            td[winner]["runs_against"] += lr
+            td[winner]["overs_bowled"] += overs_to_float(lo)
 
-            results.append({"Winner": winner, "winner_runs": sc["winner_runs"], "winner_overs": sc["winner_overs"],
-                            "loser_runs": sc["loser_runs"], "loser_overs": sc["loser_overs"]})
+            td[loser]["runs_for"] += lr
+            td[loser]["overs_faced"] += overs_to_float(lo)
+            td[loser]["runs_against"] += wr
+            td[loser]["overs_bowled"] += overs_to_float(wo)
+
+            results.append({"Winner": winner, "winner_runs": wr, "winner_overs": wo,
+                            "loser_runs": lr, "loser_overs": lo})
 
         final_pts = {t: td[t]["points"] for t in teams}
         final_nrr = {t: calculate_nrr(td[t]) for t in teams}
@@ -1070,7 +1137,9 @@ def generate_single_team_route(target_team, target_rank, max_attempts=100_000):
 
         if success and max(final_pts.values()) <= 22:
             return results, final_pts, attempt + 1
+            
     return None, None, max_attempts
+
 
 
 # ---------------------------------------------------------------------------
