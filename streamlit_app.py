@@ -630,7 +630,6 @@ if st.session_state.simulation_df is not None:
     if st.session_state.get("what_if_applied"):
         st.subheader("📋 What-if Points Table (After Applied Matches)")
         whatif_table = sim.get_points_table_after_what_if(what_if_matches)
-        whatif_table = add_form_column(whatif_table)
         if "Status" in st.session_state.simulation_df.columns:
             status_dict = dict(zip(st.session_state.simulation_df["Team"], st.session_state.simulation_df["Status"]))
             whatif_table.insert(1, "Status", whatif_table["Team"].map(status_dict))
