@@ -20,3 +20,6 @@ venv/
 #streamlit admin controls
 .streamlit/
 __pycache__/
+
+# Local utility scripts
+ipl.ps1
