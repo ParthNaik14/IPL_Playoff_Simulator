@@ -64,8 +64,8 @@ recent_form = {
     "Royal Challengers Bengaluru":           [1, 1, 0, 1],
     "Gujarat Titans":                        [0, 0, 1, 1],
     "Mumbai Indians":                        [1, 0, 0, 0],
-    "Punjab Kings":                          [1, 1, 1],
-    "Kolkata Knight Riders":                 [0, 0, 0],
+    "Punjab Kings":                          [1, 1, 9, 1],
+    "Kolkata Knight Riders":                 [0, 0, 9, 0],
     "Delhi Capitals":                        [1, 1, 0, 0],
     "Lucknow Super Giants":                  [0, 1, 1, 0],
     "Sunrisers Hyderabad":                   [0, 1, 0, 0],
@@ -80,9 +80,20 @@ def get_form_score(team):
     results = recent_form[team]
     if not results:
         return 0.5
-    w = FORM_WEIGHTS[-len(results):]
+
+    # 1. FILTER: Create a list that physically removes any 9s
+    math_results = [r for r in results if r != 9]
+
+    # 2. SAFETY: If a team has ONLY played NRs, give them neutral 0.5
+    if not math_results:
+        return 0.5
+
+    # 3. WEIGHTS: Use the length of the FILTERED list
+    w = FORM_WEIGHTS[-len(math_results):]
     total_w = sum(w)
-    return sum(wi * r for wi, r in zip(w, results)) / total_w
+
+    # 4. CALC: Use math_results, NOT the original results list
+    return sum(wi * r for wi, r in zip(w, math_results)) / total_w
 
 
 # ---------------------------------------------------------------------------
@@ -346,6 +357,8 @@ def commit_result(home, away, winner, winner_runs, winner_overs_str,
         for team in [home, away]:
             updated_points_data[team]["points"] += 1
             updated_points_data[team]["matches"] += 1
+            recent_form[team].append(9)
+            recent_form[team] = recent_form[team][-5:]
     else:
         wo = overs_to_float(winner_overs_str)
         lo = overs_to_float(loser_overs_str)

@@ -4,6 +4,24 @@ from datetime import datetime
 import io
 import ipl_simulator as sim
 
+def add_form_column(df):
+    """Adds a styled HTML Form column to the points table."""
+    def get_styled_result(res):
+        if res == 1:
+            return '<span style="color: #00FF00; font-weight: bold;">W</span>'
+        elif res == 0:
+            return '<span style="color: #FF4B4B; font-weight: bold;">L</span>'
+        elif res == 9: # Draw 'NR' whenever the script sees our nickname '9'
+            return '<span style="color: #808080; font-weight: bold;">NR</span>'
+        return ""
+
+    form_map = {
+        team: " ".join([get_styled_result(res) for res in sim.recent_form.get(team, [])])
+        for team in df["Team"]
+    }
+    df["Form (Oldest → Recent)"] = df["Team"].map(form_map)
+    return df
+
 # --- Page setup ---
 st.set_page_config(page_title="IPL Playoff Simulator", layout="wide")
 st.title("📊 IPL 2026 Playoff Qualification Simulator")
@@ -612,6 +630,7 @@ if st.session_state.simulation_df is not None:
     if st.session_state.get("what_if_applied"):
         st.subheader("📋 What-if Points Table (After Applied Matches)")
         whatif_table = sim.get_points_table_after_what_if(what_if_matches)
+        whatif_table = add_form_column(whatif_table)
         if "Status" in st.session_state.simulation_df.columns:
             status_dict = dict(zip(st.session_state.simulation_df["Team"], st.session_state.simulation_df["Status"]))
             whatif_table.insert(1, "Status", whatif_table["Team"].map(status_dict))
@@ -620,6 +639,7 @@ if st.session_state.simulation_df is not None:
     else:
         st.markdown("### 📌 Current IPL Points Table")
         current_table = pd.DataFrame(sim.get_current_points_table())
+        current_table = add_form_column(current_table)
         if "Status" in st.session_state.simulation_df.columns:
             status_dict = dict(zip(st.session_state.simulation_df["Team"], st.session_state.simulation_df["Status"]))
             current_table.insert(1, "Status", current_table["Team"].map(status_dict))
@@ -986,6 +1006,7 @@ Where K = 32, expected score is derived from the pre-match Elo gap, and actual s
 else:
     st.markdown("### 📌 Current IPL Points Table")
     current_table = pd.DataFrame(sim.get_current_points_table())
+    current_table = add_form_column(current_table)
     current_table.index = range(1, len(current_table) + 1)
     st.markdown(style_points_table(current_table).to_html(escape=False), unsafe_allow_html=True)
 
