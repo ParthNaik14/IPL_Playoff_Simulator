@@ -641,9 +641,14 @@ def get_what_if_baseline(matches):
             "overs_faced": overs_to_float(updated_points_data[team]["overs_faced"]),
             "runs_against": updated_points_data[team]["runs_against"],
             "overs_bowled": overs_to_float(updated_points_data[team]["overs_bowled"]),
+            "W": sum(1 for m in committed_results if m.get("winner") == team),
+            "NR": sum(1 for m in committed_results if m.get("abandoned") and (m.get("home") == team or m.get("away") == team)),
         }
         for team in teams
     }
+    
+    for team in teams:
+        base_td[team]["L"] = base_td[team]["matches"] - base_td[team]["W"] - base_td[team]["NR"]
 
     pending_matches = []
 
@@ -654,6 +659,7 @@ def get_what_if_baseline(matches):
                 for t in [h, a]:
                     base_td[t]["points"] += 1
                     base_td[t]["matches"] += 1
+                    base_td[t]["NR"] += 1
                 continue
 
             w = r
@@ -661,7 +667,10 @@ def get_what_if_baseline(matches):
 
             base_td[w]["points"] += 2
             base_td[w]["matches"] += 1
+            base_td[w]["W"] += 1
+            
             base_td[l]["matches"] += 1
+            base_td[l]["L"] += 1
 
             try:
                 wr = match.get("runs", {}).get(w)
@@ -687,6 +696,7 @@ def get_what_if_baseline(matches):
     base_pts = {t: base_td[t]["points"] for t in teams}
     base_nrr = {t: calculate_nrr(base_td[t]) for t in teams}
     return base_pts, base_nrr, pending_matches, base_td
+
 
 
 # ---------------------------------------------------------------------------
@@ -795,8 +805,22 @@ def get_current_points_table():
         of = overs_to_float(d["overs_faced"])
         ob = overs_to_float(d["overs_bowled"])
         nrr = round(d["runs_for"] / of - d["runs_against"] / ob, 3) if of > 0 and ob > 0 else 0.0
-        table.append({"Team": team, "Matches": d["matches"], "Points": d["points"], "NRR": nrr})
+        
+        wins = sum(1 for m in committed_results if m.get("winner") == team)
+        nrs = sum(1 for m in committed_results if m.get("abandoned") and (m.get("home") == team or m.get("away") == team))
+        losses = d["matches"] - wins - nrs
+
+        table.append({
+            "Team": team, 
+            "Matches": d["matches"], 
+            "W": wins, 
+            "L": losses, 
+            "NR": nrs, 
+            "Points": d["points"], 
+            "NRR": nrr
+        })
     return pd.DataFrame(sorted(table, key=lambda x: (x["Points"], x["NRR"]), reverse=True))
+
 
 
 def get_points_table_after_what_if(what_if_matches):
@@ -806,8 +830,18 @@ def get_points_table_after_what_if(what_if_matches):
         of = d["overs_faced"]
         ob = d["overs_bowled"]
         nrr = round(d["runs_for"] / of - d["runs_against"] / ob, 3) if of > 0 and ob > 0 else 0.0
-        table.append({"Team": team, "Matches": d["matches"], "Points": d["points"], "NRR": nrr})
+        
+        table.append({
+            "Team": team, 
+            "Matches": d["matches"], 
+            "W": d["W"], 
+            "L": d["L"], 
+            "NR": d["NR"], 
+            "Points": d["points"], 
+            "NRR": nrr
+        })
     return pd.DataFrame(sorted(table, key=lambda x: (x["Points"], x["NRR"]), reverse=True))
+
 
 
 # ---------------------------------------------------------------------------
